@@ -13,7 +13,7 @@ export function LobbyGameChange({ gameType, onAction }: Props) {
   return (
     <button
       onClick={onAction}
-      className="w-full max-w-sm mx-auto bg-white/5 backdrop-blur-md border border-white/10 p-3 rounded-2xl shadow-lg flex items-center justify-between mt-2"
+      className="w-full max-w-md mx-auto bg-white/5 backdrop-blur-md border border-white/10 p-3 rounded-2xl shadow-lg flex items-center justify-between mt-2"
     >
       <div className="flex items-center gap-3">
         <div className="w-4 h-4 bg-white/5 rounded-xl flex items-center justify-center text-xs border border-white/10">

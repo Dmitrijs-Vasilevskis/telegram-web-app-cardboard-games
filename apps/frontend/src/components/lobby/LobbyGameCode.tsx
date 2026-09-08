@@ -6,7 +6,7 @@ interface Props {
   
   export function LobbyGameCode({ roomCode, copyInviteLink, copied }: Props) {
     return (
-      <div className="w-full max-w-sm mx-auto bg-white/5 backdrop-blur-md border border-white/10 p-3 rounded-2xl shadow-lg flex items-center justify-between mt-2">
+      <div className="w-full max-w-md mx-auto bg-white/5 backdrop-blur-md border border-white/10 p-3 rounded-2xl shadow-lg flex items-center justify-between mt-2">
         <div className="flex flex-col">
           <span className="text-xs text-white/40 font-bold tracking-wider uppercase">
             Lobby Code
