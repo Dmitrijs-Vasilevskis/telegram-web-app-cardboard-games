@@ -9,8 +9,7 @@ interface Props {
 
 export function LobbyActions({ isReady, isHost, canStart, onLeave }: Props) {
   return (
-    <div className="w-full max-w-sm mx-auto flex flex-col gap-2 bg-black/30 backdrop-blur-md border border-white/5 p-3 rounded-2xl shadow-xl">
-      {/* Host Start Game Trigger */}
+    <div className="w-full max-w-md mx-auto flex flex-col gap-2 bg-black/30 backdrop-blur-md border border-white/5 p-3 rounded-2xl shadow-xl">
       {isHost && (
         <button
           onClick={() => roomService.startGame()}
@@ -21,7 +20,6 @@ export function LobbyActions({ isReady, isHost, canStart, onLeave }: Props) {
         </button>
       )}
 
-      {/* Dual Mode Action Buttons Wrapper */}
       <div className="flex gap-2 w-full">
         <button
           onClick={() => roomService.toggleReady()}

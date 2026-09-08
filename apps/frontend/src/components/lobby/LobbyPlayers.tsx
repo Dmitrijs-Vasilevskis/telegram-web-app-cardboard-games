@@ -12,7 +12,7 @@ export function LobbyPlayers({ players, localPlayer, hostId }: Props) {
   const [imageErrors, setImageErrors] = useState<Record<string, boolean>>({});
 
   return (
-    <div className="flex-1 flex flex-col min-h-0 my-4 w-full max-w-sm mx-auto">
+    <div className="max-w-md mx-auto flex flex-col min-h-0 w-full h-full">
       <div className="flex items-center justify-between mb-2 px-1">
         <span className="text-xs font-bold uppercase tracking-wider text-white/50">
           Players Joined
@@ -22,7 +22,7 @@ export function LobbyPlayers({ players, localPlayer, hostId }: Props) {
         </span>
       </div>
 
-      <div className="flex-1 w-full bg-white/5 border border-white/10 rounded-2xl p-3 overflow-y-auto space-y-2.5 shadow-inner no-scrollbar">
+      <div className="flex-1 min-h-0 w-full bg-white/5 border border-white/10 rounded-2xl p-3 overflow-y-auto no-scrollbar space-y-2.5 shadow-inner landscape:gap-2.5 landscape:space-y-0 landscape:content-start">
         {players.map((player) => {
           const initial = player.name
             ? player.name.charAt(0).toUpperCase()
