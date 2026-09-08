@@ -15,7 +15,7 @@ export function ProfileInformationPanel({
   setImageError,
 }: Props) {
   return (
-    <div className="w-full flex items-center gap-3 bg-white/5 backdrop-blur-md border border-white/10 p-4 rounded-2xl shadow-lg mt-2">
+    <div className="w-full flex items-center gap-3 bg-white/5 backdrop-blur-md border border-white/10 p-4 landscape:mt-0 rounded-2xl shadow-lg mt-2">
       <ProfileAvatar
         photo_url={user?.photo_url ?? null}
         displayName={displayName}
@@ -27,7 +27,7 @@ export function ProfileInformationPanel({
         <span className="text-xs text-white/40 font-medium tracking-wide uppercase">
           Logged in as
         </span>
-        <span className="text-base font-bold text-white/90 truncate max-w-[160px]">
+        <span className="text-base font-bold text-white/90 truncate max-w-40">
           {user?.username ? `@${user.username}` : displayName}
         </span>
       </div>
