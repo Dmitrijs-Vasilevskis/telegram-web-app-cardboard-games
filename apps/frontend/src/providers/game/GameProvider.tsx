@@ -13,6 +13,7 @@ interface GameContextInterface {
   isLandscape: boolean;
   username: string;
   user: WebAppUser | null;
+  isFullscreen: boolean;
   setRoomCode: React.Dispatch<React.SetStateAction<string>>;
   setUsername: (username: string) => void;
   createRoom: () => Promise<void>;
@@ -23,7 +24,16 @@ interface GameContextInterface {
 export const GameContext = createContext<GameContextInterface | null>(null);
 
 export function GameProvider({ children }: { children: React.ReactNode }) {
-  const { initData, username, user, setUsername, ready } = useTelegramUser();
+  const {
+    initData,
+    username,
+    user,
+    setUsername,
+    ready,
+    isFullscreen,
+    requestFullscreen,
+    exitFullscreen,
+  } = useTelegramUser();
 
   const [roomCode, setRoomCode] = useState<string>("");
   const [joining, setJoining] = useState<boolean>(false);
@@ -144,6 +154,18 @@ export function GameProvider({ children }: { children: React.ReactNode }) {
     };
   }, []);
 
+  useEffect(() => {
+    if (!ready) return;
+
+    if (isLandscape && !isFullscreen) {
+      requestFullscreen();
+    }
+
+    if (!isLandscape && isFullscreen) {
+      exitFullscreen();
+    }
+  }, [ready, isLandscape, isFullscreen, requestFullscreen, exitFullscreen]);
+
   return (
     <GameContext.Provider
       value={{
@@ -153,6 +175,7 @@ export function GameProvider({ children }: { children: React.ReactNode }) {
         isLandscape,
         username,
         user,
+        isFullscreen,
         setRoomCode,
         setUsername,
         createRoom,
