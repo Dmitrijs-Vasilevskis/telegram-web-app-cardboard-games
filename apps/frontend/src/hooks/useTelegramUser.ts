@@ -43,7 +43,7 @@ export function useTelegramUser(): UseTelegramUserInterface {
 
 
     setInitData(telegramInitData);
-    setUser(telegramUser);
+    setUser(telegramUser ?? null);
     setUsername(telegramUser.username || telegramUser.first_name || "Anonymous Player");
 
     setIsFullscreen(tg.isFullscreen ?? false);
