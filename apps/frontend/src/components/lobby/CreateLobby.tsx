@@ -8,7 +8,11 @@ export function CreateLobby({ joining, onCreate }: Props) {
     <button
       disabled={joining}
       onClick={onCreate}
-      className="w-full h-14 rounded-2xl bg-linear-to-r from-emerald-500 to-green-600 hover:opacity-90 font-bold tracking-wide shadow-lg shadow-green-900/30 active:scale-[0.98] transition-all disabled:opacity-50 flex items-center justify-center gap-2"
+      className="
+      w-full rounded-2xl py-3 bg-linear-to-r from-emerald-500 to-green-600 hover:opacity-90
+      font-bold tracking-wide shadow-lg shadow-green-900/30 active:scale-[0.98] transition-all
+      disabled:opacity-50 flex items-center justify-center gap-2 landscape:py-1.5
+        "
     >
       {joining ? (
         <span className="text-sm font-medium animate-pulse">
@@ -17,7 +21,9 @@ export function CreateLobby({ joining, onCreate }: Props) {
       ) : (
         <>
           <span className="text-lg">🎮</span>
-          <span>CREATE NEW GAME</span>
+          <span className="uppercase text-base landscape:text-sm">
+            Create New Game
+          </span>
         </>
       )}
     </button>
