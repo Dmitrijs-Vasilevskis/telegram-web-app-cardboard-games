@@ -36,27 +36,27 @@ export function JoinRoomScreen() {
           setImageError={setImageError}
         />
 
-        <div className="flex-1 flex flex-col justify-center items-center w-full max-w-sm mx-auto px-2 gap-6 my-4">
+        <div className="flex-1 flex flex-col justify-center items-center w-full max-w-sm mx-auto px-2 gap-6 my-4 landscape:max-w-md landscape:gap-3 landscape:my-0 landscape:px-0">
           <div className="text-center">
-            <h1 className="text-4xl font-extrabold tracking-wider bg-clip-text text-transparent bg-linear-to-r from-red-500 via-yellow-400 to-blue-500 drop-shadow-sm">
-              UNO MINI
+            <h1 className="text-4xl font-extrabold tracking-wider bg-clip-text text-transparent bg-linear-to-r from-red-500 via-yellow-400 to-blue-500 drop-shadow-sm landscape:text-2xl landscape:tracking-wide">
+              CARDS MINI
             </h1>
-            <p className="text-xs text-white/50 mt-1">
+            <p className="text-xs text-white/50 mt-1 landscape:text-[10px]">
               Real-time Telegram Card Battles
             </p>
           </div>
 
           {joinError && (
-            <div className="w-full rounded-xl border border-red-500/40 bg-red-500/10 px-4 py-3 text-center text-sm text-red-300">
+            <div className="w-full rounded-xl border border-red-500/40 bg-red-500/10 px-4 py-3 text-center text-sm text-red-300 landscape:px-3 landscape:py-2 landscape:text-xs landscape:rounded-lg">
               {joinError}
             </div>
           )}
 
           <CreateLobby joining={joining} onCreate={createRoom} />
 
-          <div className="flex items-center gap-3 w-full opacity-30">
+          <div className="flex items-center gap-3 w-full opacity-30 landscape:gap-2">
             <div className="flex-1 h-px bg-white" />
-            <span className="text-xs font-bold tracking-widest">OR</span>
+            <span className="text-xs font-bold tracking-widest landscape:text-[10px]">OR</span>
             <div className="flex-1 h-px bg-white" />
           </div>
 

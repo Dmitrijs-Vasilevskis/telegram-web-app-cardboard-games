@@ -14,7 +14,7 @@ export function ProfileAvatar({
   const userInitial = displayName.charAt(0).toUpperCase();
 
   return (
-    <div className="w-12 h-12 rounded-full overflow-hidden bg-linear-to-tr from-yellow-400 to-orange-500 flex items-center justify-center font-bold text-lg text-white shadow-md border border-white/20 shrink-0">
+    <div className="w-12 h-12 landscape:w-10 landscape:h-10 rounded-full overflow-hidden bg-linear-to-tr from-yellow-400 to-orange-500 flex items-center justify-center font-bold text-lg text-white shadow-md border border-white/20 shrink-0">
       {photo_url && !imageError ? (
         <img
           src={photo_url}
