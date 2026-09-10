@@ -25,7 +25,7 @@ export function JoinRoomScreen() {
       className={`h-screen w-full flex flex-col justify-between pb-4 px-4 select-none overflow-hidden
     bg-linear-to-b from-[#1c0a26] via-[#2a1b40] to-[#0f081d] text-white
     landscape:gap-3 landscape:grid landscape:grid-cols-8 landscape:grid-rows-[1fr_auto]
-        ${isFullscreen ? "pt-6" : "pt-4"}
+        ${isFullscreen ? "pt-12" : "pt-4"}
     `}
     >
       <div className="flex flex-1 flex-col landscape:col-span-7 landscape:row-span-2">
