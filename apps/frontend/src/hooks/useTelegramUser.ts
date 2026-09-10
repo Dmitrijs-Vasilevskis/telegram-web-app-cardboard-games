@@ -41,22 +41,39 @@ export function useTelegramUser(): UseTelegramUserInterface {
     const telegramInitData = tg.initData as string;
     const telegramUser = tg.initDataUnsafe?.user as WebAppUser | undefined;
 
-
     setInitData(telegramInitData);
     setUser(telegramUser ?? null);
     setUsername(telegramUser?.username || telegramUser?.first_name || "Anonymous Player");
 
-    setIsFullscreen(tg.isFullscreen ?? false);
-    setReady(true);
+    const updateSettingButton = (fullscreen: boolean) => {
+      if (!tg.SettingsButton || !tg?.isVersionAtLeast("7.0")) {
+        return;
+      }
+
+      if (fullscreen) {
+        tg.SettingsButton.hide();
+      } else {
+        tg.SettingsButton.show();
+      }
+    }
+
+    const fullscreen = tg.isFullscreen ?? false;
+    setIsFullscreen(fullscreen);
+    updateSettingButton(fullscreen);
 
     const handleFullscreenChanged = () => {
-      setIsFullscreen(tg.isFullscreen ?? false);
+      const fullscreen = tg.isFullscreen ?? false;
+
+      setIsFullscreen(fullscreen);
+      updateSettingButton(fullscreen);
     }
 
     tg.onEvent?.(
       "fullscreenChanged",
       handleFullscreenChanged
     );
+
+    setReady(true);
 
     return () => {
       tg.offEvent?.(
@@ -69,7 +86,7 @@ export function useTelegramUser(): UseTelegramUserInterface {
   const requestFullscreen = useCallback(() => {
     const tg = (window as any).Telegram?.WebApp;
 
-    if (!tg?.requestFullscreen) {
+    if (!tg?.requestFullscreen || !tg?.isVersionAtLeast("8.0")) {
       console.warn("Telegram fullscreen mode is not supported");
       return;
     }
@@ -80,7 +97,8 @@ export function useTelegramUser(): UseTelegramUserInterface {
   const exitFullscreen = useCallback(() => {
     const tg = (window as any).Telegram?.WebApp;
 
-    if (!tg?.exitFullscreen) {
+
+    if (!tg?.exitFullscreen || !tg.isVersionAtLeast("8.0")) {
       console.warn("Telegram fullscreen mode is not supported");
       return;
     }
