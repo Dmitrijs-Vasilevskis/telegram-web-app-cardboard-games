@@ -22,7 +22,7 @@ export function LobbyPlayers({ players, localPlayer, hostId }: Props) {
         </span>
       </div>
 
-      <div className="flex-1 min-h-0 w-full bg-white/5 border border-white/10 rounded-2xl p-3 overflow-y-auto no-scrollbar space-y-2.5 shadow-inner landscape:gap-2.5 landscape:space-y-0 landscape:content-start">
+      <div className="flex-1 min-h-0 w-full bg-white/5 border border-white/10 rounded-2xl p-3 landscape:p-2.5 overflow-y-auto no-scrollbar space-y-2.5 shadow-inner landscape:gap-2.5 landscape:space-y-0 landscape:content-start">
         {players.map((player) => {
           const initial = player.name
             ? player.name.charAt(0).toUpperCase()
@@ -34,7 +34,7 @@ export function LobbyPlayers({ players, localPlayer, hostId }: Props) {
           return (
             <div
               key={player.id}
-              className={`p-3 rounded-xl border flex items-center justify-between transition-all ${
+              className={`px-3 py-3 landscape:py-2 rounded-xl border flex items-center justify-between transition-all ${
                 player.id === localPlayer?.id
                   ? "bg-white/10 border-white/20 shadow-md"
                   : "bg-black/20 border-transparent"
