@@ -15,7 +15,7 @@ export function CreateLobby({ joining, onCreate }: Props) {
         "
     >
       {joining ? (
-        <span className="text-sm font-medium animate-pulse">
+        <span className="text-sm font-medium animate-pulse my-1">
           Setting up lobby...
         </span>
       ) : (
