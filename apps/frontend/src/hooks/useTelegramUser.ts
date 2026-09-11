@@ -52,8 +52,10 @@ export function useTelegramUser(): UseTelegramUserInterface {
 
       if (fullscreen) {
         tg.SettingsButton.hide();
+        console.log(">> tg.SettingsButton hide", tg.SettingsButton);
       } else {
         tg.SettingsButton.show();
+        console.log(">> tg.SettingsButton show", tg.SettingsButton);
       }
     }
 
