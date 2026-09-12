@@ -7,15 +7,19 @@ import { GameScreen } from "./game/screens/GameScreen";
 function App() {
   const status = useGameStore((s) => s.status);
 
-  switch (status) {
-    case RoomStatus.LOBBY:
-      return <LobbyScreen />;
-    case RoomStatus.PLAYING:
-    case RoomStatus.FINISHED:
-      return <GameScreen />;
-    default:
-      return <JoinRoomScreen />;
-  }
+  const renderScreen = () => {
+    switch (status) {
+      case RoomStatus.LOBBY:
+        return <LobbyScreen />;
+      case RoomStatus.PLAYING:
+      case RoomStatus.FINISHED:
+        return <GameScreen />;
+      default:
+        return <JoinRoomScreen />;
+    }
+  };
+
+  return <div className="telegram-viewport">{renderScreen()}</div>;
 }
 
 export default App;
