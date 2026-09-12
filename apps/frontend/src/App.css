@@ -18,3 +18,15 @@
   }
 }
 
+.telegram-viewport {
+  width: 100%;
+  height: 100dvh;
+
+  padding:
+    var(--tg-content-safe-area-inset-top, 0px)
+    var(--tg-content-safe-area-inset-right, 0px)
+    var(--tg-content-safe-area-inset-bottom, 0px)
+    var(--tg-content-safe-area-inset-left, 0px);
+
+  box-sizing: border-box;
+}
