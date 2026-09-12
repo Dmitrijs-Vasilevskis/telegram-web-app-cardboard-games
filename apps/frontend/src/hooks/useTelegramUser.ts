@@ -87,7 +87,7 @@ export function useTelegramUser(): UseTelegramUserInterface {
       return;
     }
 
-    // tg.requestFullscreen();
+    tg.requestFullscreen();
   }, []);
 
   const exitFullscreen = useCallback(() => {
@@ -102,7 +102,7 @@ export function useTelegramUser(): UseTelegramUserInterface {
       return;
     }
 
-    // tg.exitFullscreen();
+    tg.exitFullscreen();
   }, []);
 
   return { initData, username, user, setUsername, ready, error, isFullscreen, requestFullscreen, exitFullscreen };
