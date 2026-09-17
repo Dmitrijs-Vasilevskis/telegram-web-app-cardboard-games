@@ -15,12 +15,12 @@ export function GameEndOverlay({ result }: Props) {
   const localPlayer = useGameStore((state) => state.localPlayer);
   const players = useGameStore((state) => state.players);
   const hostId = useGameStore((state) => state.hostId);
-  const isHost = localPlayer.id === hostId;
 
   if (!localPlayer) {
     return null;
   }
-
+  
+  const isHost = localPlayer.id === hostId;
   const readyPlayers = players.filter((player) => player.isReady).length;
   const canStart = players.length >= 1 && players.every((p) => p.isReady);
 
