@@ -7,7 +7,7 @@ import { mapDealerCard } from "../../mappers/bj/CardMapper";
 export function BjGameStateEvents(
     $: StateCallbacks,
     gameState: BjGameState
-) {
+): Array<() => void> {
     const store = useGameStore.getState();
 
     // set initial dealer state
