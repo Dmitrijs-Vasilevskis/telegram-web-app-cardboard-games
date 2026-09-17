@@ -1,16 +1,10 @@
 import { GameType, RoomStatus } from "@uno/shared";
 import type { BaseLocalPlayerDTO, BasePlayerDTO, StoreSlice } from "../types";
 
-export interface GameWinner {
-    id: string;
-    name: string;
-}
-
-export interface RoundResults {
-    roundWinnerId: string;
-    roundWinnerName: string;
-    pointsAwarded: number;
-    totalScore: number;
+export interface GameResult {
+    winnerId: string;
+    winnerName: string;
+    winnerScore: number;
     standings: {
         playerId: string;
         playerName: string;
@@ -31,8 +25,7 @@ export interface RoomState {
     status: RoomStatus | null
     hostId: string;
     roomError: string | null;
-    winner: GameWinner | null;
-    roundResults: RoundResults | null;
+    gameResult: GameResult | null;
     isPaused: boolean;
     pausedPlayerId: string | null;
     reconnectRemaining: number | null;
@@ -49,8 +42,7 @@ export interface RoomActions {
     setStatus: (status: RoomStatus) => void;
     setHostId: (hostId: string) => void;
     setPaused: (paused: boolean, pausedPlayerId?: string, reconnectRemaining?: number) => void;
-    setWinner: (winner: GameWinner | null) => void;
-    setRoundResults: (results: RoundResults | null) => void;
+    setGameResult: (winner: GameResult | null) => void;
     setRoomError: (message: string | null) => void;
 }
 
@@ -65,8 +57,7 @@ export const initialRoomState: RoomState = {
     status: null,
     hostId: "",
     roomError: null,
-    winner: null,
-    roundResults: null,
+    gameResult: null,
     isPaused: false,
     pausedPlayerId: null,
     reconnectRemaining: null
@@ -83,8 +74,8 @@ export const createRoomSlice: StoreSlice<RoomSlice> = (set) => ({
     status: null,
     hostId: "",
     roomError: null,
-    winner: null,
-    roundResults: null,
+    gameResult: null,
+    roundResult: null,
     isPaused: false,
     pausedPlayerId: null,
     reconnectRemaining: null,
@@ -97,9 +88,8 @@ export const createRoomSlice: StoreSlice<RoomSlice> = (set) => ({
     setLocalPlayer: (localPlayer: BaseLocalPlayerDTO | null) => set({ localPlayer }),
     setCurrentTurn: (currentTurn: string) => set({ currentTurn }),
     setHostId: (hostId) => set({ hostId }),
-    setWinner: (winner: GameWinner | null) => set({ winner }),
+    setGameResult: (gameResult: GameResult | null) => set({ gameResult }),
     setRoomError: (roomError) => set({ roomError }),
-    setRoundResults: (roundResults: RoundResults | null) => set({ roundResults }),
     setPaused: (isPaused: boolean, pausedPlayerId?: string, reconnectRemaining?: number) => {
         set({
             isPaused,

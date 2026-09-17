@@ -1,5 +1,3 @@
-import type { RoomStatus } from "@uno/shared";
-
 export type Color =
     | 'red'
     | 'green'
@@ -46,12 +44,13 @@ export interface LocalPlayerDTO
     hand: CardDTO[];
 }
 
-export interface GameWinner {
-    id: string;
-    name: string;
+export interface GameResults {
+    winnerId: string;
+    winnerName: string;
+    winnerScore: number;
 }
 
-export interface RoundResults {
+export interface UnoRoundResults {
     roundWinnerId: string;
     roundWinnerName: string;
     pointsAwarded: number;
@@ -64,42 +63,3 @@ export interface RoundResults {
 }
 
 export type GameDirection  = 1 | -1;
-
-export interface GameStore {
-    connected: boolean;
-    roomId: string | null;
-    roomCode: string | null;
-    status: RoomStatus;
-    hostId: string;
-    currentTurn: string;
-    direction: GameDirection;
-    activeColor: Color;
-    discardTop: CardDTO | null;
-    players: PlayerDTO[];
-    localPlayer: LocalPlayerDTO | null;
-    winner: GameWinner | null;
-    roundResults: RoundResults | null;
-    isPaused: boolean;
-    pausedPlayerId: string | null;
-    reconnectRemaining: number | null;
-    unoWindowPlayerId: string | null;
-    roomError: string | null;
-    setConnected: (value: boolean) => void;
-    setRoomId: (roomId: string) => void;
-    setRoomCode: (roomCode: string) => void;
-    setCurrentTurn: (playerId: string) => void;
-    setDirection: (direction: GameDirection) => void;
-    setPlayers: (players: PlayerDTO[]) => void;
-    setLocalPlayer: (player: LocalPlayerDTO) => void;
-    setDiscardTop: (card: CardDTO) => void;
-    setActiveColor: (color: Color) => void;
-    setHostId: (hostId: string) => void;
-    setStatus: (status: RoomStatus) => void;
-    setWinner: (winner: GameWinner) => void;
-    resetGame: () => void;
-    setPaused: (paused: boolean, pausedPlayerId?: string, reconnectRemaining?: number) => void;
-    setUnoWindowPlayerId: (playerId: string | null) => void;
-    setRoundResults: (results: RoundResults | null) => void;
-    setRoomError: (message: string | null) => void;
-    reset: () => void;
-}

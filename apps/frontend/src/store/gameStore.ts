@@ -19,8 +19,8 @@ export const useGameStore = create<GameStore>()((set, get, api) => ({
         const gameType = get().gameType;
 
         set({
-            winner: null,
-            roundResults: null,
+            gameResult: null,
+            roundResult: null,
             isPaused: false,
             pausedPlayerId: null,
             reconnectRemaining: null,

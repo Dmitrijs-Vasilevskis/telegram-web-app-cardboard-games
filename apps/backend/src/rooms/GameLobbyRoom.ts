@@ -5,13 +5,14 @@ import { StateView } from "@colyseus/schema";
 import { assertRoomCapacity, hasRoomCode, registerRoom, unregisterRoom } from "../utils/roomRegistry";
 import { ALLOWED_EMOTE_IDS, MAX_CLIENTS, ROOM_CODE_MAX_GENERATION_ATTEMPTS } from "../game/constants";
 import { generateUniqueRoomCode } from "../utils/roomCode";
-import { GAME_REGISTRY } from "../game/GameRegistry";
+import { GAME_REGISTRY, GameEngine } from "../game/GameRegistry";
 import { GameEventBus } from "../game/event/GameEventBus";
 import { GameEventBroadcaster } from "../game/event/GameEventBroadcaster";
 import { SeatManager } from "../game/SeatManager";
 
 export class GameLobbyRoom extends Room<RoomOptions> {
-    private gameEngine!: any;
+    private gameEngine?: GameEngine;
+    private gameEngineMessageListeners: Array<() => void> = [];
     private gameEventBus!: GameEventBus;
     private gameEventBroadcaster!: GameEventBroadcaster;
     private seatManager!: SeatManager;
@@ -74,6 +75,14 @@ export class GameLobbyRoom extends Room<RoomOptions> {
             this.handleStartGame(client.sessionId);
         });
 
+        this.onMessage('restartGame', (client) => {
+            this.handleRestartGame(client.sessionId);
+        })
+
+        this.onMessage('backToLobby', (client) => {
+            this.handleBackToLobby(client.sessionId);
+        });
+
         this.onMessage('toggleReady', (client) => {
             const player = this.state.players.get(client.sessionId);
             if (player) player.isReady = !player.isReady;
@@ -93,7 +102,7 @@ export class GameLobbyRoom extends Room<RoomOptions> {
             const player = this.state.players.get(client.sessionId);
 
             if (player) player.avatarId = payload.avatarId;
-        })
+        });
     }
 
     async onAuth(client: Client, options: { initData: string }) {
@@ -178,7 +187,7 @@ export class GameLobbyRoom extends Room<RoomOptions> {
 
         const seatIndex = this.seatManager.reserve(newPlayer.id);
 
-        if(seatIndex === null) {
+        if (seatIndex === null) {
             throw new Error("No seats available");
         }
 
@@ -233,6 +242,7 @@ export class GameLobbyRoom extends Room<RoomOptions> {
         this.gameEventBroadcaster?.stop();
 
         if (this.gameEngine) {
+            this.cleanupGameMessages();
             this.gameEngine.dispose();
         }
     }
@@ -246,6 +256,16 @@ export class GameLobbyRoom extends Room<RoomOptions> {
 
         if (this.state.status !== RoomStatus.LOBBY) return;
 
+        const allReady = Array.from(this.state.players.values())
+            .every((player) => player.isReady);
+
+        if (!allReady) {
+            this.broadcast("error", {
+                message: "All players must be ready.",
+            });
+            return;
+        }
+
         const gameConfig = GAME_REGISTRY[this.state.gameType];
 
         this.state.gameState = gameConfig.createGameState();
@@ -255,7 +275,11 @@ export class GameLobbyRoom extends Room<RoomOptions> {
             this.state,
             this.gameEventBus
         );
-        gameConfig.setupMessages(this, this.gameEngine);
+
+        this.gameEngineMessageListeners = gameConfig.setupMessages(
+            this,
+            this.gameEngine
+        );
 
         this.state.status = RoomStatus.PLAYING;
         this.gameEngine.startGame();
@@ -263,9 +287,88 @@ export class GameLobbyRoom extends Room<RoomOptions> {
         this.broadcast("gameStarted", { gameType: this.state.gameType });
     }
 
+    private handleRestartGame(playerId: string) {
+        if (this.state.hostId !== playerId) return;
+
+        if (this.state.status !== RoomStatus.FINISHED) return;
+
+        if (this.state.players.size < 1) {
+            this.broadcast('error', { message: 'At least 2 players required to start the game.' });
+            return;
+        }
+
+        const allReady = Array.from(this.state.players.values())
+            .every((player) => player.isReady);
+
+        if (!allReady) {
+            this.broadcast("error", {
+                message: "All players must be ready.",
+            });
+            return;
+        }
+
+        this.cleanupGameMessages();
+        this.gameEngine?.dispose();
+        this.gameEngine = undefined;
+
+        const gameConfig = GAME_REGISTRY[this.state.gameType];
+
+        this.state.gameState = gameConfig.createGameState();
+
+        this.gameEngine = gameConfig.createEngine(
+            this,
+            this.state,
+            this.gameEventBus
+        );
+
+        this.gameEngineMessageListeners = gameConfig.setupMessages(
+            this,
+            this.gameEngine
+        );
+
+        this.state.gameEnded = false;
+        this.state.roundWinnerId = "";
+        this.state.matchWinnerId = "";
+
+        for (const player of this.state.players.values()) {
+            player.isReady = false;
+            player.isTurn = false;
+        }
+
+        this.state.status = RoomStatus.PLAYING;
+        this.gameEngine.startGame();
+
+        this.broadcast("gameStarted", { gameType: this.state.gameType });
+    }
+
+    private handleBackToLobby(playerId: string) {
+        const player = this.state.players.get(playerId);
+
+        if (!player) return;
+
+        if (player.id !== this.state.hostId) return;
+
+        if (this.state.status !== RoomStatus.FINISHED) return;
+
+        this.cleanupGame();
+        this.transitionToLobby();
+    }
+
+    private transitionToLobby() {
+        this.state.gameEnded = false;
+        this.state.roundWinnerId = "";
+        this.state.matchWinnerId = "";
+
+        for (const player of this.state.players.values()) {
+            player.isReady = false;
+        }
+
+        this.state.status = RoomStatus.LOBBY;
+    }
+
     private removePlayer(playerId: string) {
         this.seatManager.release(playerId);
-        
+
         const playerIndex = this.state.playerOrder.indexOf(playerId);
         if (playerIndex !== -1) this.state.playerOrder.splice(playerIndex, 1);
 
@@ -323,5 +426,24 @@ export class GameLobbyRoom extends Room<RoomOptions> {
             clearInterval(this.pauseIntervalTimer);
             this.pauseIntervalTimer = null;
         }
+    }
+
+    private cleanupGameMessages() {
+        for (const unbind of this.gameEngineMessageListeners) {
+            unbind();
+        }
+
+        this.gameEngineMessageListeners = [];
+    }
+
+    private cleanupGame() {
+        for (const unbind of this.gameEngineMessageListeners) {
+            unbind();
+        }
+
+        this.gameEngineMessageListeners = [];
+
+        this.gameEngine?.dispose();
+        this.gameEngine = undefined;
     }
 }

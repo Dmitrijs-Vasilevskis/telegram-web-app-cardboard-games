@@ -15,13 +15,15 @@ export function RegisterGameModuleEvents(
     let activeGameListeners: Array<() => void> = [];
 
     const cleanup = () => {
-        activeGameListeners.forEach((unlisten) => {
+        const listeners = activeGameListeners;
+
+        for (const unlisten of listeners) {
             try {
                 unlisten();
             } catch (error) {
                 console.warn("[GAME MODULE] Failed to cleanup listener:", error);
             }
-        });
+        }
 
         activeGameListeners = [];
     };

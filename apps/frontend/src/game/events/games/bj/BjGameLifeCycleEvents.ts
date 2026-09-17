@@ -3,7 +3,7 @@ import type { GameRoom } from "../../types";
 
 export function BjGameLifeCycleEvents(
     room: GameRoom
-) {
+): Array<() => void> {
     return [
         room.onMessage("roundResults", ({
             results,
@@ -13,8 +13,6 @@ export function BjGameLifeCycleEvents(
                 points: number;
             }>;
         }) => {
-
-            console.log(">>> roundResults", results);
             const { setScoreAnimation } = useGameStore.getState();
 
             for (const result of results) {

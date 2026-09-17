@@ -1,11 +1,11 @@
-import { Card, Color, Value } from '@uno/shared';
+import { Card, Color, UnoCardValue } from '@uno/shared';
 import { v4 as uuidv4 } from 'uuid';
 
 export function createDeck(): Card[] {
   const deck: Card[] = [];
   const colors: Color[] = ['red', 'green', 'blue', 'yellow'];
-  const numbers: Value[] = ['0','1','2','3','4','5','6','7','8','9'];
-  const actions: Value[] = ['skip', 'reverse', 'drawTwo'];
+  const numbers: UnoCardValue[] = ['0','1','2','3','4','5','6','7','8','9'];
+  const actions: UnoCardValue[] = ['skip', 'reverse', 'drawTwo'];
 
   for (const color of colors) {
     // one '0' per color
@@ -17,7 +17,7 @@ export function createDeck(): Card[] {
 
     // two of each 1-9
     for (let i = 1; i <= 9; i++) {
-      const val = i.toString() as Value;
+      const val = i.toString() as UnoCardValue;
       const card1 = new Card();
       card1.id = uuidv4();
       card1.color = color;

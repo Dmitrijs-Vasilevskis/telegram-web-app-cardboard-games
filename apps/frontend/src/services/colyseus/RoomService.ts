@@ -16,6 +16,14 @@ export class RoomService {
         this.colyseus.send("startGame");
     }
 
+    restartGame(){
+        this.colyseus.send("restartGame");
+    }
+
+    backToLobby() {
+        this.colyseus.send("backToLobby");
+    }
+
     selectGame(gameType: GameType) {
         this.colyseus.send("selectGame", { gameType });
     }

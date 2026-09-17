@@ -2,14 +2,14 @@ import { ArraySchema, Schema, type, view } from "@colyseus/schema";
 import { BaseGameState, BasePlayerData } from "../types";
 
 export type Color = 'red' | 'green' | 'blue' | 'yellow';
-export type Value =
+export type UnoCardValue =
     | '0' | '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9'
     | 'skip' | 'reverse' | 'drawTwo' | 'wild' | 'wildDrawFour';
 
 export class Card extends Schema {
     @type("string") id: string = "";
     @type("string") color: Color | null = null;
-    @type("string") value: Value = "0";
+    @type("string") value: UnoCardValue = "0";
 }
 
 export class UnoPlayerData extends BasePlayerData {

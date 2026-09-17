@@ -1,9 +1,8 @@
 import type { ReactNode } from "react";
-import { VictoryOverlay } from "./VictoryOverlay";
-import { RoundEndOverlay } from "./RoundEndOverlay";
 import { EmoteWheel } from "../table/EmoteWheel";
 import { PauseOverlay } from "../../game/hud/PauseOverlay";
 import { FloatingActionText } from "../uno/FloatingActionText";
+import { ResultManager } from "./results/ResultManager";
 
 interface Props {
   scene: ReactNode;
@@ -17,10 +16,8 @@ export default function GameLayout({ scene, hud, children }: Props) {
       {/* hud */}
       {hud}
 
-      {/* shared overlay, victory/round end overlay */}
-      <VictoryOverlay />
-
-      <RoundEndOverlay />
+      {/* shared overlay, game/round end overlay */}
+      <ResultManager />
 
       <PauseOverlay />
 

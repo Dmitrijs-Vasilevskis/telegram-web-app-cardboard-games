@@ -395,7 +395,6 @@ export class BlackjackGameEngine {
     }
 
     private finalizeRound() {
-        const bjState = this.getBjState();
         const dealerHand = evaluateHand(this.dealer.hand);
         const results: BjRoundResult[] = [];
 
@@ -463,20 +462,33 @@ export class BlackjackGameEngine {
     }
 
     private handleRoundWin() {
-        let leadingPlayerId = "";
+        let leadingPlayer: Player | null = null;
         let maxScore = 0;
 
         for (const player of this.state.players.values()) {
             if (player.score >= MATCH_WINNING_SCORE && player.score > maxScore) {
                 maxScore = player.score;
-                leadingPlayerId = player.id;
+                leadingPlayer = player;
             }
         }
 
-        if (leadingPlayerId) {
-            this.state.matchWinnerId = leadingPlayerId;
+        if (leadingPlayer !== null) {
+            const standings = Array.from(this.state.players.values()).map(player => ({
+                playerId: player.id,
+                playerName: player.name,
+                score: player.score
+            })).sort((a, b) => b.score - a.score);
+
+            this.state.matchWinnerId = leadingPlayer.id;
             this.state.gameEnded = true;
             this.state.status = RoomStatus.FINISHED;
+
+            this.room.broadcast("gameEnd", {
+                matchWinnerId: leadingPlayer.id,
+                winnerName: leadingPlayer.name,
+                winnerScore: maxScore,
+                standings
+            });
 
         } else {
             this.state.roundNumber = (this.state.roundNumber || 1) + 1;
@@ -511,4 +523,19 @@ export class BlackjackGameEngine {
             this.room.broadcast("dealerBlackjack");
         }
     }
-}   
+
+    dispose() {
+        this.scheduler.cancelAll();
+
+        this.initialDealSequence = [];
+        this.initialDealIndex = 0;
+
+        this.dealer.clear();
+
+        this.needsReshuffle = false;
+    }
+
+    handleTimeoutForfeit() {
+        // todo: implement turn transfer to the next player/dealer
+    }
+}
