@@ -1,7 +1,7 @@
-import { GameState, Card, Value, UnoGameState } from "@uno/shared";
+import { GameState, Card, UnoCardValue, UnoGameState } from "@uno/shared";
 import { createDeck, shuffle } from "./UNODeck";
 
-const NUMBER_VALUES: Value[] = [
+const NUMBER_VALUES: UnoCardValue[] = [
     "0",
     "1",
     "2",
