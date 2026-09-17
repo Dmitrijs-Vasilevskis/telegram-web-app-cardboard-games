@@ -1,6 +1,6 @@
 import { useEffectStore } from "../../../store/effectsStore";
 import { useGameStore } from "../../../store/gameStore";
-import type { RoundResults } from "../../../types/game";
+import type { GameResult } from "../../../store/slices/roomSlice";
 import { GameEvents, type GameRoom } from "../types";
 
 
@@ -8,15 +8,16 @@ export function RegisterGameLifecycleEvents(room: GameRoom) {
     const store = useGameStore.getState();
     const effects = useEffectStore.getState();
 
-    room.onMessage(GameEvents.GAME_END, (data: {
-        matchWinnerId: string;
-        winnerName: string;
-        winnerScore?: number;
-    }) => {
-        store.setWinner({ id: data.matchWinnerId, name: data.winnerName });
+    room.onMessage(GameEvents.GAME_END, (gameResult: GameResult) => {
+        store.setGameResult({
+            winnerId: gameResult.winnerId,
+            winnerName: gameResult.winnerName,
+            winnerScore: gameResult.winnerScore,
+            standings: gameResult.standings
+        });
 
         effects.addEffect({
-            text: `${data.winnerName} WINS!`,
+            text: `${gameResult.winnerName} WINS!`,
             color: "#facc15",
             emphasis: "special",
         });
@@ -24,14 +25,6 @@ export function RegisterGameLifecycleEvents(room: GameRoom) {
 
     room.onMessage(GameEvents.GAME_START, () => {
         store.resetGame()
-    });
-
-    room.onMessage(GameEvents.ROUND_STARTED, () => {
-        store.setRoundResults(null);
-    });
-
-    room.onMessage(GameEvents.ROUND_ENDED, (results: RoundResults) => {
-        store.setRoundResults(results);
     });
 
     room.onMessage(GameEvents.ERROR, (data: { message: string }) => {

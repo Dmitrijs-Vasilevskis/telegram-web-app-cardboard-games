@@ -3,6 +3,7 @@ import type { GameRoom, StateCallbacks } from "../../types";
 import { UnoPlayerGameDataEvents } from "./UnoPlayerGameDataEvents";
 import { UnoGameStateEvents } from "./UnoGameStateEvents";
 import { UnoEvents } from "./UnoEvents";
+import { UnoLifecycleEvents } from "./UnoLifecycleEvents";
 
 export interface GameEventModule {
     initialize(
@@ -19,6 +20,7 @@ export const UnoEventModule: GameEventModule = {
             ...UnoGameStateEvents($, room.state.gameState as UnoGameState),
             ...UnoPlayerGameDataEvents($, room),
             ...UnoEvents(room),
+            ...UnoLifecycleEvents(room),
         );
 
         return unlisteners;

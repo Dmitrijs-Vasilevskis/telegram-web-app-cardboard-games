@@ -1,6 +1,4 @@
 import type { ReactNode } from "react";
-import { VictoryOverlay } from "./VictoryOverlay";
-import { RoundEndOverlay } from "./RoundEndOverlay";
 import { EmoteWheel } from "../table/EmoteWheel";
 import { PauseOverlay } from "../../game/hud/PauseOverlay";
 import { FloatingActionText } from "../uno/FloatingActionText";
@@ -16,11 +14,6 @@ export default function GameLayout({ scene, hud, children }: Props) {
     <div className="relative h-screen w-screen text-white overflow-hidden bg-linear-to-b from-[#ac61a3] to-[#2a57c0]">
       {/* hud */}
       {hud}
-
-      {/* shared overlay, victory/round end overlay */}
-      <VictoryOverlay />
-
-      <RoundEndOverlay />
 
       <PauseOverlay />
 

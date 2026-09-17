@@ -7,6 +7,18 @@ export interface UnoPlayerDataDTO {
     saidUno: boolean;
 }
 
+export interface UnoRoundResult {
+    roundWinnerId: string;
+    roundWinnerName: string;
+    pointsAwarded: number;
+    totalScore: number;
+    standings: {
+        playerId: string;
+        playerName: string;
+        score: number;
+    }[];
+}
+
 export type UnoPlayerDTO = BasePlayerDTO<UnoPlayerDataDTO>;
 
 export interface UnoLocalPlayerDataDTO extends UnoPlayerDataDTO {
@@ -22,6 +34,7 @@ export interface UnoState {
     activeColor: Color;
     discardTop: CardDTO | null;
     unoWindowPlayerId: string | null;
+    roundResult: UnoRoundResult | null;
 }
 
 export interface UnoActions {
@@ -29,22 +42,22 @@ export interface UnoActions {
     setActiveColor: (color: Color) => void;
     setDirection: (direction: GameDirection) => void;
     setUnoWindowPlayerId: (playerId: string | null) => void;
+    setRoundResult: (roundResult: UnoRoundResult | null) => void;
 }
 
 export const initialUnoState: UnoState = {
     direction: 1,
     activeColor: 'red',
     discardTop: null,
-    unoWindowPlayerId: null
+    unoWindowPlayerId: null,
+    roundResult: null,
 }
 
 export const unoSlice: StoreSlice<UnoSlice> = (set) => ({
-    direction: 1,
-    activeColor: 'red',
-    discardTop: null,
-    unoWindowPlayerId: null,
+    ...initialUnoState,
     setDiscardTop: (discardTop: CardDTO | null) => set({ discardTop }),
     setActiveColor: (activeColor: Color) => set({ activeColor }),
     setDirection: (direction) => set({ direction }),
-    setUnoWindowPlayerId: (playerId: string | null) => set({ unoWindowPlayerId: playerId })
+    setUnoWindowPlayerId: (playerId: string | null) => set({ unoWindowPlayerId: playerId }),
+    setRoundResult: (roundResult: UnoRoundResult | null) => set({ roundResult }),
 });
