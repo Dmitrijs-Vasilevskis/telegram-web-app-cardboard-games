@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import type { GameResult } from "../../../store/slices/roomSlice";
+import type { GameResult } from "../../../../store/slices/roomSlice";
 
 interface Props {
   result: GameResult;

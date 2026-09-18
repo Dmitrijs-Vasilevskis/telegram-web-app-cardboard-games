@@ -1,8 +1,8 @@
 import { motion } from "framer-motion";
 import { useGameStore } from "../../../store/gameStore";
 import type { GameResult } from "../../../store/slices/roomSlice";
-import { GameEndActions } from "./GameEndActions";
-import { GameEndResults } from "./GameEndResults";
+import { GameEndActions } from "./game/GameEndActions";
+import { GameEndResults } from "./game/GameEndResults";
 import { useGameContext } from "../../../providers/game/GameProvider";
 import { roomService } from '../../../services/colyseus/index';
 
@@ -19,7 +19,7 @@ export function GameEndOverlay({ result }: Props) {
   if (!localPlayer) {
     return null;
   }
-  
+
   const isHost = localPlayer.id === hostId;
   const readyPlayers = players.filter((player) => player.isReady).length;
   const canStart = players.length >= 1 && players.every((p) => p.isReady);
