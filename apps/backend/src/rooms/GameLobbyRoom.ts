@@ -249,7 +249,7 @@ export class GameLobbyRoom extends Room<RoomOptions> {
 
     private handleStartGame(playerId: string) {
         if (playerId !== this.state.hostId) return;
-        if (this.state.players.size < 1) {
+        if (!this.hasEnoughPlayers()) {
             this.broadcast('error', { message: 'At least 2 players required to start the game.' });
             return;
         }
@@ -292,7 +292,7 @@ export class GameLobbyRoom extends Room<RoomOptions> {
 
         if (this.state.status !== RoomStatus.FINISHED) return;
 
-        if (this.state.players.size < 1) {
+        if (!this.hasEnoughPlayers()) {
             this.broadcast('error', { message: 'At least 2 players required to start the game.' });
             return;
         }
@@ -376,7 +376,12 @@ export class GameLobbyRoom extends Room<RoomOptions> {
         if (this.state.currentTurn === playerId) this.state.currentTurn = "";
         if (this.state.hostId === playerId) this.state.hostId = this.state.playerOrder[0] ?? "";
 
-        if (this.state.players.size === 0) this.disconnect();
+        if (this.state.players.size === 0) {
+            this.disconnect();
+            return;
+        }
+
+        this.handlePlayerCountChanged();
     }
 
     private findExistingPlayer(telegramId: string): Player | undefined {
@@ -445,5 +450,26 @@ export class GameLobbyRoom extends Room<RoomOptions> {
 
         this.gameEngine?.dispose();
         this.gameEngine = undefined;
+    }
+
+    private handlePlayerCountChanged() {
+        if (this.state.status !== RoomStatus.PLAYING) {
+            return;
+        }
+
+        if (this.hasEnoughPlayers()) {
+            return;
+        }
+
+        this.cleanupGame();
+        this.transitionToLobby();
+
+        this.broadcast("gameCancelled", { message: "Not enough players" });
+    }
+
+    private hasEnoughPlayers(): boolean {
+        const gameConfig = GAME_REGISTRY[this.state.gameType];
+
+        return this.state.players.size >= gameConfig.minPlayers;
     }
 }
