@@ -25,7 +25,6 @@ export function RegisterRoomEvents(
     $(room.state).listen(
         "roomCode",
         (roomCode: string) => {
-            console.log(">>> room code update", roomCode);
             store.setRoomCode(roomCode);
         }
     );
@@ -67,6 +66,13 @@ export function RegisterRoomEvents(
         "gameType",
         (gameType: GameType) => {
             store.setGameType(gameType);
+        }
+    );
+
+    $(room.state).listen(
+        "roundStartAt",
+        (roundStartAt: number) => {
+            store.setRoundStartAt(roundStartAt);
         }
     );
 }

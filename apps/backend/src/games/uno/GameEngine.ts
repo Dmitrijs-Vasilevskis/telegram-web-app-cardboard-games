@@ -64,6 +64,7 @@ export class UnoGameEngine {
 
         const unoState = this.getUnoState();
 
+        this.state.roundStartAt = 0;
         this.state.isPaused = false;
         this.state.pausedPlayerId = "";
         this.state.roundWinnerId = "";
@@ -293,16 +294,6 @@ export class UnoGameEngine {
             score: player.score
         })).sort((a, b) => b.score - a.score);
 
-        this.room.broadcast("roundEnded",
-            {
-                roundWinnerId: playerId,
-                roundWinnerName: winner.name,
-                pointsAwarded: points,
-                totalScore: winner.score,
-                standings
-            }
-        );
-
         if (winner.score >= MATCH_WINNING_SCORE) {
             this.clearRoundStartTimer();
             this.state.matchWinnerId = playerId;
@@ -322,12 +313,23 @@ export class UnoGameEngine {
         };
 
         this.clearRoundStartTimer();
+        this.state.roundStartAt = Date.now() + ROUND_INTERMISSION_MS;
 
+
+        this.room.broadcast("roundEnded",
+            {
+                roundWinnerId: playerId,
+                roundWinnerName: winner.name,
+                pointsAwarded: points,
+                totalScore: winner.score,
+                standings
+            }
+        );
+        
         // prevent stuck match if a round winner leaves
         this.roundStartTimer = setTimeout(() => {
             this.roundStartTimer = null;
-
-            if (this.state.players.size < 2) return;
+            this.state.roundStartAt = 0;
 
             const starterId = this.state.players.has(playerId)
                 ? playerId

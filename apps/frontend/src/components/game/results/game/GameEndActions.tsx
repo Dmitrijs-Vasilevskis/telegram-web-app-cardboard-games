@@ -1,4 +1,4 @@
-import { roomService } from "../../../services/colyseus";
+import { roomService } from "../../../../services/colyseus";
 
 interface Props {
   onBackToLobby: () => void;

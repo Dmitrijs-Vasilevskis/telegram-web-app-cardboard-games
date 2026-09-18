@@ -43,6 +43,7 @@ export class GameState extends Schema {
   @type("string") currentTurn: string = "";
   @type("uint16") roundNumber: number = 1;
 
+  @type("number") roundStartAt: number = 0;
   @type("string") roundWinnerId?: string = "";
   @type("string") matchWinnerId?: string = "";
   @type("boolean") gameEnded: boolean = false;
