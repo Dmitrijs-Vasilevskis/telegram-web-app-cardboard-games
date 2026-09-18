@@ -68,4 +68,11 @@ export function RegisterRoomEvents(
             store.setGameType(gameType);
         }
     );
+
+    $(room.state).listen(
+        "roundStartAt",
+        (roundStartAt: number) => {
+            store.setRoundStartAt(roundStartAt);
+        }
+    );
 }

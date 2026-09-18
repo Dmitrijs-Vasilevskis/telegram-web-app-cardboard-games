@@ -29,6 +29,7 @@ export interface RoomState {
     isPaused: boolean;
     pausedPlayerId: string | null;
     reconnectRemaining: number | null;
+    roundStartAt: number;
 }
 
 export interface RoomActions {
@@ -44,6 +45,7 @@ export interface RoomActions {
     setPaused: (paused: boolean, pausedPlayerId?: string, reconnectRemaining?: number) => void;
     setGameResult: (winner: GameResult | null) => void;
     setRoomError: (message: string | null) => void;
+    setRoundStartAt: (roundStartAt: number) => void;
 }
 
 export const initialRoomState: RoomState = {
@@ -60,25 +62,12 @@ export const initialRoomState: RoomState = {
     gameResult: null,
     isPaused: false,
     pausedPlayerId: null,
-    reconnectRemaining: null
+    reconnectRemaining: null,
+    roundStartAt: 0,
 }
 
 export const createRoomSlice: StoreSlice<RoomSlice> = (set) => ({
-    connected: false,
-    roomId: null,
-    roomCode: null,
-    players: [],
-    localPlayer: null,
-    currentTurn: "",
-    gameType: GameType.UNO,
-    status: null,
-    hostId: "",
-    roomError: null,
-    gameResult: null,
-    roundResult: null,
-    isPaused: false,
-    pausedPlayerId: null,
-    reconnectRemaining: null,
+    ...initialRoomState,
     setConnected: (connected) => set({ connected }),
     setRoomId: (roomId) => set({ roomId }),
     setStatus: (status: RoomStatus | null) => set({ status }),
@@ -96,5 +85,6 @@ export const createRoomSlice: StoreSlice<RoomSlice> = (set) => ({
             pausedPlayerId: pausedPlayerId ?? null,
             reconnectRemaining: reconnectRemaining ?? null,
         })
-    }
+    },
+    setRoundStartAt: (roundStartAt: number) => set({ roundStartAt }),
 });
