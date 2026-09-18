@@ -25,7 +25,6 @@ export function RegisterRoomEvents(
     $(room.state).listen(
         "roomCode",
         (roomCode: string) => {
-            console.log(">>> room code update", roomCode);
             store.setRoomCode(roomCode);
         }
     );
