@@ -3,7 +3,7 @@ import { TelegramAuthUser, validateTelegramInitData } from "../auth/telegram";
 import { AvatarId, GameState, GameType, Player, RoomOptions, RoomStatus } from "@uno/shared";
 import { StateView } from "@colyseus/schema";
 import { assertRoomCapacity, hasRoomCode, registerRoom, unregisterRoom } from "../utils/roomRegistry";
-import { ALLOWED_EMOTE_IDS, MAX_CLIENTS, ROOM_CODE_MAX_GENERATION_ATTEMPTS } from "../game/constants";
+import { ALLOWED_EMOTE_IDS, MAX_CLIENTS, PLAYER_RECONNECT_TIMEOUT_MS, PLAYER_RECONNECT_TIMEOUT_SECONDS, ROOM_CODE_MAX_GENERATION_ATTEMPTS } from "../game/constants";
 import { generateUniqueRoomCode } from "../utils/roomCode";
 import { GAME_REGISTRY, GameEngine } from "../game/GameRegistry";
 import { GameEventBus } from "../game/event/GameEventBus";
@@ -204,10 +204,6 @@ export class GameLobbyRoom extends Room<RoomOptions> {
     }
 
     async onLeave(client: Client, code?: number) {
-        console.log(
-            `[LEAVE] session=${client.sessionId}, code=${code}, status=${this.state.status}`
-        );
-
         const player = this.state.players.get(client.sessionId);
         if (!player) return;
 
@@ -219,24 +215,33 @@ export class GameLobbyRoom extends Room<RoomOptions> {
         player.isConnected = false;
         player.disconnectedAt = Date.now();
 
+        const shouldPause = this.state.status === RoomStatus.PLAYING
+            && !this.isRoundIntermission();
 
-        this.handlePlayerDisconnect(client.sessionId, 30000);
+        if (shouldPause) {
+            this.handlePlayerDisconnect(
+                client.sessionId,
+                PLAYER_RECONNECT_TIMEOUT_MS
+            );
+        }
 
         try {
-            await this.allowReconnection(client, 30);
+            await this.allowReconnection(client, PLAYER_RECONNECT_TIMEOUT_SECONDS);
             player.isConnected = true;
             player.disconnectedAt = 0;
 
             this.handlePlayerReconnect(client.sessionId);
         } catch {
-            const wasPausedPlayer = this.state.pausedPlayerId === player.id;
-            this.removePlayer(player.id);
-            if (wasPausedPlayer && this.gameEngine) {
-
-                this.resumeGame();
-                this.gameEngine.handleTimeoutForfeit();
-            }
+            this.handlePlayerReconnectTimeout(client.sessionId);
         }
+    }
+
+    private isRoundIntermission(): boolean {
+        if (this.state.status !== RoomStatus.PLAYING) {
+            return false;
+        }
+
+        return this.state.roundStartAt > Date.now();
     }
 
     onDispose() {
@@ -374,11 +379,20 @@ export class GameLobbyRoom extends Room<RoomOptions> {
         this.seatManager.release(playerId);
 
         const playerIndex = this.state.playerOrder.indexOf(playerId);
-        if (playerIndex !== -1) this.state.playerOrder.splice(playerIndex, 1);
+
+        if (playerIndex !== -1) {
+            this.state.playerOrder.splice(playerIndex, 1);
+        }
 
         this.state.players.delete(playerId);
-        if (this.state.currentTurn === playerId) this.state.currentTurn = "";
-        if (this.state.hostId === playerId) this.state.hostId = this.state.playerOrder[0] ?? "";
+
+        if (this.state.currentTurn === playerId) {
+            this.state.currentTurn = "";
+        }
+
+        if (this.state.hostId === playerId) {
+            this.state.hostId = this.state.playerOrder[0] ?? "";
+        }
 
         if (this.state.players.size === 0) {
             this.disconnect();
@@ -416,6 +430,26 @@ export class GameLobbyRoom extends Room<RoomOptions> {
 
             // this.room.broadcast("gameResumed");
         }
+    }
+
+    handlePlayerReconnectTimeout(playerId: string) {
+        const player = this.state.players.get(playerId);
+
+        if (!player) {
+            return;
+        }
+
+        const wasPaused = this.state.isPaused
+            && this.state.pausedPlayerId === playerId;
+
+        this.clearPauseInterval();
+
+        if (wasPaused) {
+            this.resumeGame();
+            this.gameEngine?.handleTimeoutForfeit();
+        }
+
+        this.removePlayer(playerId);
     }
 
     private pauseGame(playerId: string, durationMs: number) {
