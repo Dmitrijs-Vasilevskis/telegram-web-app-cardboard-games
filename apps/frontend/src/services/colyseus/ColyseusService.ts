@@ -1,6 +1,6 @@
 import { Client, type Room } from "@colyseus/sdk";
 
-const STORAGE_SESSION_KEY = "uno_player_session";
+const RECONNECTION_TOKEN = "lobby_reconnection_token";
 
 export class ColyseusService {
     readonly client: Client;
@@ -14,13 +14,23 @@ export class ColyseusService {
     }
 
     async createRoom(initData: string) {
-        this.room = await this.client.create("game", {
+        const room = await this.client.create("game", {
             initData
         });
 
+        return this.setupRoom(room);
+    }
+
+    private setupRoom(room: Room) {
+        this.room = room;
+
         this.persistSession();
 
-        return this.room;
+        room.onReconnect(() => {
+            this.persistSession();
+        });
+
+        return room;
     }
 
     async joinRoomByCode(
@@ -37,8 +47,8 @@ export class ColyseusService {
         return this.room;
     }
 
-    async reconnect(roomId: string, sessionId: string) {
-        this.room = await this.client.reconnect(roomId, sessionId);
+    async reconnect(reconnetionToken: string) {
+        this.room = await this.client.reconnect(reconnetionToken);
         this.persistSession();
         return this.room;
     }
@@ -50,18 +60,18 @@ export class ColyseusService {
     async leave() {
         if (!this.room) return;
 
-        sessionStorage.removeItem(STORAGE_SESSION_KEY);
+        localStorage.removeItem(RECONNECTION_TOKEN);
 
         this.room.leave();
         this.room = null;
     }
 
     async trySessionRecovery(): Promise<Room | null> {
-        const cached = sessionStorage.getItem(STORAGE_SESSION_KEY);
-        if (!cached) return null;
+        const reconnetionToken = localStorage.getItem(RECONNECTION_TOKEN);
+        if (!reconnetionToken) return null;
 
         try {
-            this.room = await this.client.reconnect(cached);
+            this.room = await this.client.reconnect(reconnetionToken);
 
             this.persistSession();
 
@@ -69,7 +79,7 @@ export class ColyseusService {
         } catch (error) {
             console.warn("[RECONNECTION FAILED]: Session missing on the server or token expired. Clearing cache.", error);
 
-            sessionStorage.removeItem(STORAGE_SESSION_KEY);
+            localStorage.removeItem(RECONNECTION_TOKEN);
             this.room = null;
 
             return null;
@@ -79,6 +89,6 @@ export class ColyseusService {
     private persistSession() {
         if (!this.room) return;
 
-        sessionStorage.setItem(STORAGE_SESSION_KEY, this.room.reconnectionToken)
+        localStorage.setItem(RECONNECTION_TOKEN, this.room.reconnectionToken)
     }
 }
