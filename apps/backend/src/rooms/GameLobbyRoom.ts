@@ -204,6 +204,10 @@ export class GameLobbyRoom extends Room<RoomOptions> {
     }
 
     async onLeave(client: Client, code?: number) {
+        console.log(
+            `[LEAVE] session=${client.sessionId}, code=${code}, status=${this.state.status}`
+        );
+
         const player = this.state.players.get(client.sessionId);
         if (!player) return;
 
