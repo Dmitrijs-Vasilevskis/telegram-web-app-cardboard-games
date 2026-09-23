@@ -1,6 +1,6 @@
 import { Client, CloseCode, Room } from "@colyseus/core";
 import { TelegramAuthUser, validateTelegramInitData } from "../auth/telegram";
-import { AvatarId, GameState, GameType, Player, RoomOptions, RoomStatus } from "@uno/shared";
+import { AvatarId, GameState, GameType, LobbyMetadata, Player, RoomOptions, RoomStatus } from "@uno/shared";
 import { StateView } from "@colyseus/schema";
 import { assertRoomCapacity, hasRoomCode, registerRoom, unregisterRoom } from "../utils/roomRegistry";
 import { ALLOWED_EMOTE_IDS, MAX_CLIENTS, PLAYER_RECONNECT_TIMEOUT_MS, PLAYER_RECONNECT_TIMEOUT_SECONDS, ROOM_CODE_MAX_GENERATION_ATTEMPTS } from "../game/constants";
@@ -40,7 +40,6 @@ export class GameLobbyRoom extends Room<RoomOptions> {
         registerRoom(roomCode);
 
         this.state.roomCode = roomCode;
-        this.setMetadata({ ...this.metadata, roomCode });
 
         this.gameEventBus = new GameEventBus();
         this.gameEventBroadcaster = new GameEventBroadcaster(
@@ -50,6 +49,7 @@ export class GameLobbyRoom extends Room<RoomOptions> {
         this.seatManager = new SeatManager(6);
 
         this.gameEventBroadcaster.start();
+        this.updateLobbyMetadata();
 
         this.onMessage('selectGame', (client, payload: { gameType: GameType }) => {
             if (client.sessionId !== this.state.hostId) return;
@@ -59,7 +59,7 @@ export class GameLobbyRoom extends Room<RoomOptions> {
             if (!GAME_REGISTRY[payload.gameType]) return;
 
             this.state.gameType = payload.gameType;
-            this.setMetadata({ ...this.metadata, gameType: payload.gameType });
+            this.updateLobbyMetadata();
 
             const config = GAME_REGISTRY[payload.gameType];
 
@@ -103,6 +103,21 @@ export class GameLobbyRoom extends Room<RoomOptions> {
 
             if (player) player.avatarId = payload.avatarId;
         });
+    }
+
+    private getLobbyMetadata(): LobbyMetadata {
+        return {
+            gameType: this.state.gameType,
+            status: this.state.status,
+            playerCount: this.state.players.size,
+            maxPlayers: this.maxClients,
+            hostName: this.getHostName(),
+            roomCode: this.state.roomCode,
+        }
+    }
+
+    private updateLobbyMetadata() {
+        this.setMetadata(this.getLobbyMetadata());
     }
 
     async onAuth(client: Client, options: { initData: string }) {
@@ -201,6 +216,8 @@ export class GameLobbyRoom extends Room<RoomOptions> {
         if (!this.state.hostId) {
             this.state.hostId = client.sessionId;
         }
+
+        this.updateLobbyMetadata();
     }
 
     async onLeave(client: Client, code?: number) {
@@ -290,7 +307,8 @@ export class GameLobbyRoom extends Room<RoomOptions> {
             this.gameEngine
         );
 
-        this.state.status = RoomStatus.PLAYING;
+        this.setRoomStatus(RoomStatus.PLAYING);
+
         this.gameEngine.startGame();
 
         this.broadcast("gameStarted", { gameType: this.state.gameType });
@@ -344,7 +362,7 @@ export class GameLobbyRoom extends Room<RoomOptions> {
             player.isTurn = false;
         }
 
-        this.state.status = RoomStatus.PLAYING;
+        this.setRoomStatus(RoomStatus.PLAYING);
         this.gameEngine.startGame();
 
         this.broadcast("gameStarted", { gameType: this.state.gameType });
@@ -361,6 +379,7 @@ export class GameLobbyRoom extends Room<RoomOptions> {
 
         this.cleanupGame();
         this.transitionToLobby();
+        this.updateLobbyMetadata();
     }
 
     private transitionToLobby() {
@@ -400,6 +419,7 @@ export class GameLobbyRoom extends Room<RoomOptions> {
         }
 
         this.handlePlayerCountChanged();
+        this.updateLobbyMetadata();
     }
 
     private findExistingPlayer(telegramId: string): Player | undefined {
@@ -501,13 +521,27 @@ export class GameLobbyRoom extends Room<RoomOptions> {
 
         this.cleanupGame();
         this.transitionToLobby();
+        this.updateLobbyMetadata();
 
         this.broadcast("gameCancelled", { message: "Not enough players" });
+    }
+
+    private setRoomStatus(status: RoomStatus) {
+        if(this.state.status === status) {
+            return;
+        }
+
+        this.state.status = status;
+        this.updateLobbyMetadata();
     }
 
     private hasEnoughPlayers(): boolean {
         const gameConfig = GAME_REGISTRY[this.state.gameType];
 
         return this.state.players.size >= gameConfig.minPlayers;
+    }
+
+    private getHostName(): string {
+        return this.state.players.get(this.state.hostId)?.name ?? "";
     }
 }

@@ -16,6 +16,7 @@ export interface GameDefinition<
     TPlayerData extends BasePlayerData
 > {
     minPlayers: number;
+    maxPlayers: number;
     createGameState: () => TGameState;
     createPlayerData: () => TPlayerData;
     createEngine: (room: Room, state: GameState, eventBus: GameEventBus) => TEngine;
@@ -32,6 +33,7 @@ type GameDefinitionMap = {
 export const GAME_REGISTRY: GameDefinitionMap = {
     uno: {
         minPlayers: 2,
+        maxPlayers: 6,
         createGameState: () => new UnoGameState(),
         createPlayerData: () => new UnoPlayerData(),
         createEngine: (room, state, eventBus) => {
@@ -94,6 +96,7 @@ export const GAME_REGISTRY: GameDefinitionMap = {
     },
     blackjack: {
         minPlayers: 1,
+        maxPlayers: 6,
         createGameState: () => new BjGameState(),
         createPlayerData: () => new BjPlayerData(),
         createEngine: (room, state, eventBus) => {
