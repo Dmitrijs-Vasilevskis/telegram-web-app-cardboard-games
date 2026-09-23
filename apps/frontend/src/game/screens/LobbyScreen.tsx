@@ -41,7 +41,6 @@ export function LobbyScreen() {
   };
 
   const handleSelectGame = (selectedGame: GameType) => {
-    console.log("Selected game:", selectedGame);
     roomService.selectGame(selectedGame);
     setIsModalOpen(false);
   };

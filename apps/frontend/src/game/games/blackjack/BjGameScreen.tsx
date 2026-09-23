@@ -1,5 +1,6 @@
-import GameLayout from "../../components/game/GameLayout";
-import { BlackjackHUD } from "../../components/games/bj/BlackjackHUD";
+
+import GameLayout from "../../../components/game/GameLayout";
+import { BlackjackHUD } from "../../../components/games/bj/BlackjackHUD";
 import { BjGameplay } from "./BjGameplay";
 import { BjTable } from "./scene/BjTable";
 

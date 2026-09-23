@@ -1,10 +1,10 @@
-import { bjService } from "../../services/colyseus";
-import { useGameStore } from "../../store/gameStore";
 import { useBjDealer, useBjLocalPlayer } from "./hooks";
 import { DealerHand } from "./hud/DealerHand";
 import { HandCards } from "./hud/HandCards";
 import { ActionButtons } from "./hud/ActionButtons";
-import { usePlayerAnimationStore } from "../../store/playerAnimationStore";
+import { useGameStore } from "../../../store/gameStore";
+import { usePlayerAnimationStore } from "../../../store/playerAnimationStore";
+import { bjService } from "../../../services/colyseus";
 
 export function BjGameplay() {
   const localPlayer = useBjLocalPlayer();

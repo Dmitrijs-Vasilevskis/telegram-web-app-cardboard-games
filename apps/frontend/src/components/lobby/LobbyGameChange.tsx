@@ -1,5 +1,5 @@
 import type { GameType } from "@uno/shared";
-import { getGameMeta } from "../../games/registry";
+import { getGameMeta } from "../../game/games/registry";
 
 interface Props {
   gameType: GameType;

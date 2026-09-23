@@ -1,5 +1,5 @@
 import type { GameType } from "@uno/shared";
-import { GAME_REGISTRY } from "../../../../games/registry";
+import { GAME_REGISTRY } from "../../../../game/games/registry";
 
 interface GameSelectorProps {
   selectedGame: GameType;

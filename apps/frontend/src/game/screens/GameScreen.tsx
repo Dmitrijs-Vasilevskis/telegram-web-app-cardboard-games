@@ -1,6 +1,6 @@
-import BjGameScreen from "../../games/blackjack/BjGameScreen";
-import { UnoGameScreen } from "../../games/uno/UnoGameScreen";
 import { useGameStore } from "../../store/gameStore";
+import BjGameScreen from "../games/blackjack/BjGameScreen";
+import { UnoGameScreen } from "../games/uno/UnoGameScreen";
 
 export function GameScreen() {
   const gameType = useGameStore((s) => s.gameType);

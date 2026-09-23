@@ -1,5 +1,5 @@
-import { HitButton } from "../../../components/games/bj/HitButton";
-import { StandButton } from "../../../components/games/bj/StandButton";
+import { HitButton } from "../../../../components/games/bj/HitButton";
+import { StandButton } from "../../../../components/games/bj/StandButton";
 
 interface Props {
   onHit: () => void;

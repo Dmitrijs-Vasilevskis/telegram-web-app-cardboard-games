@@ -1,21 +1,21 @@
 import { useState } from "react";
-import { ChallengeUnoButton } from "../../components/games/uno/ChallengeUnoButton";
-import { DrawButton } from "../../components/games/uno/DrawButton";
-import { LandscapeHandCards } from "../../components/games/uno/card/LandscapeHandCards";
-import { useGameContext } from "../../providers/game/GameProvider";
-import type { CardDTO } from "../../types/game";
+import { useGameContext } from "../../../providers/game/GameProvider";
+import { useGameStore } from "../../../store/gameStore";
 import {
   useUnoActiveColor,
   useUnoDiscardTop,
   useUnoLocalPlayer,
 } from "./hooks";
+import type { CardDTO } from "../../../types/game";
 import type { Color } from "@uno/shared";
-import { unoService } from "../../services/colyseus/";
-import { useGameStore } from "../../store/gameStore";
-import { UnoButton } from "../../components/games/uno/UnoButton";
+import { usePlayerAnimationStore } from "../../../store/playerAnimationStore";
+import { unoService } from "../../../services/colyseus";
+import { UnoButton } from "../../../components/games/uno/UnoButton";
+import { ChallengeUnoButton } from "../../../components/games/uno/ChallengeUnoButton";
 import { HandCards } from "./hud/HandCards";
-import { UnoWildColorPicker } from "../../components/games/uno/UnoWildColorPicker";
-import { usePlayerAnimationStore } from "../../store/playerAnimationStore";
+import { LandscapeHandCards } from "../../../components/games/uno/card/LandscapeHandCards";
+import { DrawButton } from "../../../components/games/uno/DrawButton";
+import { UnoWildColorPicker } from "../../../components/games/uno/UnoWildColorPicker";
 
 export function UnoGameplay() {
   const { isLandscape } = useGameContext();

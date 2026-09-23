@@ -1,4 +1,4 @@
-import { useUnoLocalPlayer } from "../../../games/uno/hooks";
+import { useUnoLocalPlayer } from "../../../game/games/uno/hooks";
 import { unoService } from "../../../services/colyseus";
 import { ReactionButton } from "./ReactionButton";
 

@@ -1,10 +1,10 @@
 import { Canvas } from "@react-three/fiber";
 import { useBjLocalPlayer, useBjPlayers } from "../hooks";
 import { OrbitControls } from "@react-three/drei";
-import { OvalTable } from "../../../components/games/bj/table/OvalTable";
-import { PlayerAvatar } from "../../../components/player/PlayerAvatar";
-import { useGameStore } from "../../../store/gameStore";
-import { DealerAvatar } from "../../../components/games/bj/dealer/DealerAvatar";
+import { useGameStore } from "../../../../store/gameStore";
+import { DealerAvatar } from "../../../../components/games/bj/dealer/DealerAvatar";
+import { OvalTable } from "../../../../components/games/bj/table/OvalTable";
+import { PlayerAvatar } from "../../../../components/player/PlayerAvatar";
 
 const PLAYER_SEATS = [
   {
