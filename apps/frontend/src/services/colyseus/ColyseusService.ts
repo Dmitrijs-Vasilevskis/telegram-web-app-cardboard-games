@@ -5,12 +5,32 @@ const RECONNECTION_TOKEN = "lobby_reconnection_token";
 export class ColyseusService {
     readonly client: Client;
     room: Room | null = null;
+    lobbyRoom: Room | null = null;
 
     constructor() {
         this.client = new Client(
             import.meta.env.VITE_COLYSEUS_SERVER_URL ||
             "ws://localhost:2567"
         );
+    }
+
+    async joinLobby() {
+        if (this.lobbyRoom) {
+            return;
+        }
+
+        this.lobbyRoom = await this.client.joinOrCreate("lobby");
+
+        return this.lobbyRoom;
+    }
+
+    async leaveLobby() {
+        if (!this.lobbyRoom) {
+            return;
+        }
+
+        await this.lobbyRoom.leave();
+        this.lobbyRoom = null;
     }
 
     async createRoom(initData: string) {
@@ -62,7 +82,7 @@ export class ColyseusService {
 
         localStorage.removeItem(RECONNECTION_TOKEN);
 
-        this.room.leave();
+        await this.room.leave();
         this.room = null;
     }
 
