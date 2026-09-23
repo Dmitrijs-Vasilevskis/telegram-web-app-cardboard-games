@@ -1,9 +1,9 @@
 import { AnimatePresence, motion } from "framer-motion";
-import type { CardDTO } from "../../../types/game";
-import { useAnimationStore } from "../../../store/animationStore";
-import { unoService } from "../../../services/colyseus";
-import { Card } from "../../../components/card/Card";
-import { usePlayerAnimationStore } from "../../../store/playerAnimationStore";
+import type { CardDTO } from "../../../../types/game";
+import { useAnimationStore } from "../../../../store/animationStore";
+import { usePlayerAnimationStore } from "../../../../store/playerAnimationStore";
+import { unoService } from "../../../../services/colyseus";
+import { Card } from "../../../../components/card/Card";
 
 type Props = {
   playerId: string;

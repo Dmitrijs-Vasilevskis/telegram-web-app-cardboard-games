@@ -1,5 +1,5 @@
-import { useGameStore } from "../../store/gameStore";
-import type { UnoLocalPlayerDTO, UnoPlayerDTO } from "../../store/slices/unoSlice";
+import { useGameStore } from "../../../store/gameStore";
+import type { UnoLocalPlayerDTO, UnoPlayerDTO } from "../../../store/slices/unoSlice";
 
 export const useUnoPlayers = () =>
     useGameStore(state => state.players as UnoPlayerDTO[]);

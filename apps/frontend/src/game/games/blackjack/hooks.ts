@@ -1,5 +1,5 @@
-import { useGameStore } from "../../store/gameStore"
-import type { BjDealerDTO, BjLocalPlayerDTO, BjPlayerDTO } from "../../store/slices/bjSlice"
+import { useGameStore } from "../../../store/gameStore";
+import type { BjDealerDTO, BjLocalPlayerDTO, BjPlayerDTO } from "../../../store/slices/bjSlice";
 
 export const useBjPlayers = () =>
     useGameStore(state => state.players as BjPlayerDTO[]);

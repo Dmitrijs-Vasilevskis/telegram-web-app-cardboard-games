@@ -1,5 +1,5 @@
-import { MatchInfoPanel } from "../../game/hud/MatchInfoPanel";
-import { useGameStore } from "../../store/gameStore";
+import { useGameStore } from "../../../store/gameStore";
+import { MatchInfoPanel } from "../../hud/MatchInfoPanel";
 import {
   useUnoActiveColor,
   useUnoDiscardTop,

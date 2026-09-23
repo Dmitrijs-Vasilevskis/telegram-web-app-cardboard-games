@@ -1,7 +1,7 @@
 import { AnimatePresence, motion } from "framer-motion";
-import { ClassicCard } from "../../../components/games/bj/card/BjCard";
-import type { BjCardDTO } from "../../../store/slices/bjSlice";
 import { memo } from "react";
+import type { BjCardDTO } from "../../../../store/slices/bjSlice";
+import { ClassicCard } from "../../../../components/games/bj/card/BjCard";
 
 interface Props {
   cards: BjCardDTO[];

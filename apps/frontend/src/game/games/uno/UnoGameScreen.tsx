@@ -1,4 +1,4 @@
-import GameLayout from "../../components/game/GameLayout";
+import GameLayout from "../../../components/game/GameLayout";
 import { UnoTable3D } from "./scene/UnoTable3D";
 import { UnoGameplay } from "./UnoGameplay";
 import UnoHUD from "./UnoHUD";

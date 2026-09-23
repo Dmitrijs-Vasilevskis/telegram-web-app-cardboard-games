@@ -2,7 +2,7 @@ import {
   useBjDealer,
   useBjLocalPlayer,
   useBjPlayers,
-} from "../../../games/blackjack/hooks";
+} from "../../../game/games/blackjack/hooks";
 import { useGameStore } from "../../../store/gameStore";
 import { MatchInfoPanel } from "./MatchInfoPanel";
 

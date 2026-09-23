@@ -1,11 +1,11 @@
 import { Canvas } from "@react-three/fiber";
 import { OrbitControls } from "@react-three/drei";
-import { UnoDrawPile } from "../../../components/table/UnoDrawPile";
-import { UnoDiscardPile } from "../../../components/table/UnoDiscardPile";
-import { useGameStore } from "../../../store/gameStore";
-import { DirectionIndicator } from "../../../components/table/DirectionIndicator";
 import { useUnoLocalPlayer, useUnoPlayers } from "../hooks";
-import { UnoPlayerAvatar } from "../../../components/games/uno/player/UnoPlayerAvatar";
+import { useGameStore } from "../../../../store/gameStore";
+import { UnoDrawPile } from "../../../../components/table/UnoDrawPile";
+import { UnoDiscardPile } from "../../../../components/table/UnoDiscardPile";
+import { DirectionIndicator } from "../../../../components/table/DirectionIndicator";
+import { UnoPlayerAvatar } from "../../../../components/games/uno/player/UnoPlayerAvatar";
 
 const SEAT_POSITIONS = [
   {

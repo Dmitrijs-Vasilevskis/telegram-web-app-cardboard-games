@@ -1,7 +1,7 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { memo } from "react";
-import type { BjDealerCardDTO, BjDealerDTO } from "../../../store/slices/bjSlice";
-import { ClassicCard } from "../../../components/games/bj/card/BjCard";
+import type { BjDealerCardDTO, BjDealerDTO } from "../../../../store/slices/bjSlice";
+import { ClassicCard } from "../../../../components/games/bj/card/BjCard";
 
 interface Props {
   dealer: BjDealerDTO | null;

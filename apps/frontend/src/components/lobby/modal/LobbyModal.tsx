@@ -1,11 +1,11 @@
 import type { AvatarId, GameType } from "@uno/shared";
 import { useEffect, useState } from "react";
-import { GAME_REGISTRY } from "../../../games/registry";
 import { AVATARS } from "../../../game/avatar/avatar.config";
 import { SettingsRow } from "./SettingRow";
 import { AvatarSelector } from "./player/AvatarSettings";
 import { GameSettings } from "./game/GameSettings";
 import { ModalHeader } from "./ModalHeader";
+import { GAME_REGISTRY } from "../../../game/games/registry";
 
 interface LobbyModalProps {
   isOpen: boolean;
