@@ -2,8 +2,10 @@ import type { Room, RoomAvailable } from "@colyseus/sdk";
 import { useGameStore } from "../store/gameStore";
 import type { LobbyRoom } from "../store/slices/lobbySlice";
 
+export type SharedLobbyRoom = Room<RoomAvailable>;
+
 export class LobbyEvents {
-    private static currentRoom: Room | null = null;
+    private static currentRoom: SharedLobbyRoom | null = null;
     private static cleanup: Array<() => void> = [];
 
     static initialize(room: Room) {
@@ -23,7 +25,7 @@ export class LobbyEvents {
         this.currentRoom = null
     }
 
-    private static registerRoomEvents(room: Room) {
+    private static registerRoomEvents(room: SharedLobbyRoom) {
         this.cleanup.push(
             room.onMessage("rooms", (rooms: RoomAvailable[]) => {
                 useGameStore.getState().setLobbies(
@@ -31,7 +33,7 @@ export class LobbyEvents {
                 );
             }),
 
-            room.onMessage("+", ([roomId, room]: [string, RoomAvailable]) => {
+            room.onMessage("+", ([_, room]: [string, RoomAvailable]) => {
                 useGameStore.getState().addLobby(
                     this.mapLobby(room)
                 );
