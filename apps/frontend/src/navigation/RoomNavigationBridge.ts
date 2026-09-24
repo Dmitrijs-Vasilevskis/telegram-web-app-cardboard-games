@@ -12,7 +12,7 @@ export function RoomNavigationBridge() {
 
     useEffect(() => {
         if (!roomCode && (location.pathname === '/room' || location.pathname === '/game')) {
-            navigate("*", { replace: true });
+            navigate("/", { replace: true });
         };
 
         switch (roomStatus) {
