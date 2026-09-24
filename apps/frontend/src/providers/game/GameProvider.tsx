@@ -6,6 +6,7 @@ import { getErrorMessage } from "../../utils/errors";
 import type { WebAppUser } from "../../types/TelegramWebApp";
 import { colyseusService } from "../../services/colyseus/";
 import { useNavigate } from "react-router-dom";
+import { LobbyEvents } from "../../lobbies/LobbyEvents";
 
 interface GameContextInterface {
   joining: boolean;
@@ -159,6 +160,7 @@ export function GameProvider({ children }: { children: React.ReactNode }) {
     return () => {
       mediaQuery.removeEventListener("change", handleOrientationChange);
       GameEvents.destroy();
+      LobbyEvents.destroy();
     };
   }, []);
 
