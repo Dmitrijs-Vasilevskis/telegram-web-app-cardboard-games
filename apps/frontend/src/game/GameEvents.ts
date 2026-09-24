@@ -7,6 +7,7 @@ import { RegisterPauseEvents } from './events/base/messages/PauseEvents';
 import { RegisterGameLifecycleEvents } from './events/lifecycle/GameLifecycleEvents';
 import { RegisterGameModuleEvents } from './events/lifecycle/GameModuleEvents';
 import { RegisterPlayerPresentationEvents } from './events/base/messages/PlayerPresentationEvents';
+import { RoomLifecycleEvents } from './events/lifecycle/RoomLifecycleEvents';
 
 export class GameEvents {
     private static currentRoom: GameRoom | null = null;
@@ -19,6 +20,7 @@ export class GameEvents {
 
         RegisterBasePlayerEvents(this.currentRoom, $);
         RegisterRoomEvents(this.currentRoom, $);
+        RoomLifecycleEvents(this.currentRoom);
         RegisterGameLifecycleEvents(this.currentRoom);
         RegisterPauseEvents(this.currentRoom, $);
         RegisterPlayerPresentationEvents(this.currentRoom);
