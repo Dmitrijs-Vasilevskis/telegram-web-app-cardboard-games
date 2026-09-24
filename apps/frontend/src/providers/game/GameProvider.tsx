@@ -5,6 +5,8 @@ import { GameEvents } from "../../game/GameEvents";
 import { getErrorMessage } from "../../utils/errors";
 import type { WebAppUser } from "../../types/TelegramWebApp";
 import { colyseusService } from "../../services/colyseus/";
+import { useNavigate } from "react-router-dom";
+import { LobbyEvents } from "../../lobbies/LobbyEvents";
 
 interface GameContextInterface {
   joining: boolean;
@@ -24,6 +26,7 @@ interface GameContextInterface {
 export const GameContext = createContext<GameContextInterface | null>(null);
 
 export function GameProvider({ children }: { children: React.ReactNode }) {
+  const navigate = useNavigate();
   const {
     initData,
     username,
@@ -40,6 +43,14 @@ export function GameProvider({ children }: { children: React.ReactNode }) {
   const [joinError, setJoinError] = useState<string | null>(null);
   const [isLandscape, setIsLandscape] = useState<boolean>(false);
 
+  const initializeRoom = (
+    room: typeof colyseusService extends never ? never : any
+  ) => {
+    room.onStateChange.once(() => {
+      GameEvents.initialize(room);
+    });
+  };
+
   useEffect(() => {
     if (!ready || !initData) return;
 
@@ -48,9 +59,7 @@ export function GameProvider({ children }: { children: React.ReactNode }) {
       try {
         const activeRoom = await colyseusService.trySessionRecovery();
         if (activeRoom) {
-          activeRoom.onStateChange.once(() => {
-            GameEvents.initialize(activeRoom);
-          });
+          initializeRoom(activeRoom);
         }
       } catch (error) {
         console.error("[AUTO RECOVERY FAILED]:", error);
@@ -80,9 +89,9 @@ export function GameProvider({ children }: { children: React.ReactNode }) {
     try {
       const room = await colyseusService.createRoom(initData);
 
-      room.onStateChange.once(() => {
-        GameEvents.initialize(room);
-      });
+      initializeRoom(room);
+
+      navigate(`room`);
     } catch (err) {
       console.error(err);
       setJoinError(getErrorMessage(err));
@@ -114,9 +123,8 @@ export function GameProvider({ children }: { children: React.ReactNode }) {
     try {
       const room = await colyseusService.joinRoomByCode(roomCode, initData);
 
-      room.onStateChange.once(() => {
-        GameEvents.initialize(room);
-      });
+      initializeRoom(room);
+      navigate(`room`);
     } catch (err) {
       console.error(err);
       setJoinError(getErrorMessage(err));
@@ -132,6 +140,7 @@ export function GameProvider({ children }: { children: React.ReactNode }) {
 
       useGameStore.getState().reset();
       setJoinError(null);
+      navigate("/", { replace: true });
     } catch (error) {
       console.error("Failed to leave room", error);
     }
@@ -151,6 +160,7 @@ export function GameProvider({ children }: { children: React.ReactNode }) {
     return () => {
       mediaQuery.removeEventListener("change", handleOrientationChange);
       GameEvents.destroy();
+      LobbyEvents.destroy();
     };
   }, []);
 

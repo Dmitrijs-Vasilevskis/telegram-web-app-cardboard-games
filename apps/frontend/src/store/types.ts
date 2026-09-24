@@ -3,6 +3,7 @@ import type { StateCreator } from "zustand";
 import type { UnoSlice } from "./slices/unoSlice";
 import type { BjSlice } from "./slices/bjSlice";
 import type { RoomSlice } from "./slices/roomSlice";
+import type { LobbySlice } from "./slices/lobbySlice";
 
 export type StoreSlice<T> = StateCreator<
     GameStore,
@@ -12,6 +13,7 @@ export type StoreSlice<T> = StateCreator<
 >;
 
 export type GameStore =
+    LobbySlice &
     RoomSlice &
     UnoSlice &
     BjSlice & {

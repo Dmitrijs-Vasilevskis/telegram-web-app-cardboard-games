@@ -55,8 +55,18 @@ export class GameState extends Schema {
   @type(BaseGameState) gameState: BaseGameState | null = null;
 }
 
+export interface LobbyMetadata {
+  gameType: GameType;
+  status: RoomStatus;
+  playerCount: number;
+  maxPlayers: number;
+  hostName: string;
+  roomCode: string;
+}
+
 export interface RoomOptions {
   state: GameState;
+  metadata: LobbyMetadata;
 }
 
 export enum RoomStatus {

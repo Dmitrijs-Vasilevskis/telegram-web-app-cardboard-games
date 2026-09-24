@@ -1,25 +1,22 @@
-import { useGameStore } from "./store/gameStore";
 import { LobbyScreen } from "./game/screens/LobbyScreen";
-import { RoomStatus } from "@uno/shared";
 import { JoinRoomScreen } from "./game/screens/JoinRoomScreen";
 import { GameScreen } from "./game/screens/GameScreen";
+import { Navigate, Route, Routes } from "react-router-dom";
+import { LobbiesScreen } from "./lobbies/LobbiesScreen";
 
 function App() {
-  const status = useGameStore((s) => s.status);
+  return (
+    <div className="telegram-viewport">
+      <Routes>
+        <Route path="/play" element={<JoinRoomScreen />} />
+        <Route path="/lobbies" element={<LobbiesScreen />} />
+        <Route path="/room" element={<LobbyScreen />} />
+        <Route path="/game" element={<GameScreen />} />
 
-  const renderScreen = () => {
-    switch (status) {
-      case RoomStatus.LOBBY:
-        return <LobbyScreen />;
-      case RoomStatus.PLAYING:
-      case RoomStatus.FINISHED:
-        return <GameScreen />;
-      default:
-        return <JoinRoomScreen />;
-    }
-  };
-
-  return <div className="telegram-viewport">{renderScreen()}</div>;
+        <Route path="*" element={<Navigate to="/play" replace />} />
+      </Routes>
+    </div>
+  );
 }
 
 export default App;
