@@ -124,7 +124,7 @@ export function GameProvider({ children }: { children: React.ReactNode }) {
       const room = await colyseusService.joinRoomByCode(roomCode, initData);
 
       initializeRoom(room);
-      navigate(`room`);
+      navigate(`/room`);
     } catch (err) {
       console.error(err);
       setJoinError(getErrorMessage(err));
@@ -140,7 +140,6 @@ export function GameProvider({ children }: { children: React.ReactNode }) {
 
       useGameStore.getState().reset();
       setJoinError(null);
-      navigate("/", { replace: true });
     } catch (error) {
       console.error("Failed to leave room", error);
     }

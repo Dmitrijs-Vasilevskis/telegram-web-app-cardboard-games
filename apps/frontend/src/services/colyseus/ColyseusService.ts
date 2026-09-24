@@ -57,20 +57,18 @@ export class ColyseusService {
         roomCode: string,
         initData: string
     ): Promise<Room> {
-        this.room = await this.client.join("game", {
+        const room = await this.client.join("game", {
             roomCode,
             initData
         });
 
-        this.persistSession();
-
-        return this.room;
+        return this.setupRoom(room);
     }
 
     async reconnect(reconnetionToken: string): Promise<Room> {
-        this.room = await this.client.reconnect(reconnetionToken);
-        this.persistSession();
-        return this.room;
+        const room = await this.client.reconnect(reconnetionToken);
+
+        return this.setupRoom(room);
     }
 
     send(type: string, payload?: any) {
@@ -91,11 +89,9 @@ export class ColyseusService {
         if (!reconnetionToken) return null;
 
         try {
-            this.room = await this.client.reconnect(reconnetionToken);
+            const room = await this.client.reconnect(reconnetionToken);
 
-            this.persistSession();
-
-            return this.room;
+            return this.setupRoom(room);
         } catch (error) {
             console.warn("[RECONNECTION FAILED]: Session missing on the server or token expired. Clearing cache.", error);
 
