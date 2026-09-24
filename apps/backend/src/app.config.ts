@@ -1,4 +1,4 @@
-import { defineServer, defineRoom, monitor, } from "colyseus";
+import { defineServer, defineRoom, monitor, LobbyRoom, } from "colyseus";
 import { WebSocketTransport } from '@colyseus/ws-transport';
 import cors from 'cors';
 import express from 'express';
@@ -27,7 +27,8 @@ export const server = defineServer({
         maxPayload: MAX_WS_PAYLOAD_BYTES,
     }),
     rooms: {
-        game: defineRoom(GameLobbyRoom).filterBy(['roomCode'])
+        lobby: defineRoom(LobbyRoom),
+        game: defineRoom(GameLobbyRoom).enableRealtimeListing().filterBy(['roomCode']),
     },
     express: (app) => {
         app.set('trust proxy', 1);
