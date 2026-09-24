@@ -11,7 +11,7 @@
   },
   "dependencies": {
     "@colyseus/core": "^0.17.43",
-   "@colyseus/schema": "^4.0.25",
+    "@colyseus/schema": "^4.0.25",
     "@colyseus/ws-transport": "^0.17.13",
     "@uno/shared": "*",
     "colyseus": "^0.17.10",
