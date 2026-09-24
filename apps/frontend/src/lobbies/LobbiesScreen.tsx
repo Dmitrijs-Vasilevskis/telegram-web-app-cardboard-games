@@ -44,28 +44,26 @@ export function LobbiesScreen() {
         ${isFullscreen ? "pt-12" : "pt-4"}
     `}
     >
-      <div className="flex mb-3 flex-col landscape:col-span-7 landscape:row-span-2">
+      <div className="flex flex-1 flex-col landscape:col-span-7 landscape:row-span-2">
         <ProfileInformationPanel
           user={user}
           displayName={username}
           imageError={imageError}
           setImageError={setImageError}
         />
-      </div>
-
-      <div className="min-h-0 mb-3 flex-1 landscape:row-span-2">
-        <div className="max-w-md mx-auto flex flex-col min-h-0 w-full h-full">
-          <div
-            className="
-          flex-1 min-h-0 w-full bg-white/5 border border-white/10
-          rounded-2xl p-3 landscape:p-2.5 overflow-y-auto no-scrollbar space-y-2.5
-          shadow-inner landscape:gap-2.5 landscape:space-y-0 landscape:content-start"
-          >
-            <LobbiesList
-              lobbies={lobbies}
-              loading={loading}
-              onJoin={() => console.log(">>> onJoin")}
-            />
+        <div className="min-h-0 my-4 landscape:my-0 landscape:mt-4 flex-1 landscape:row-span-2">
+          <div className="mx-auto flex flex-col min-h-0 w-full h-full">
+            <div
+              className="flex-1 min-h-0 w-full bg-white/5 border border-white/10
+                rounded-2xl p-3 landscape:p-2.5 overflow-y-auto no-scrollbar space-y-2.5
+                shadow-inner landscape:gap-2.5 landscape:space-y-0 landscape:content-start"
+            >
+              <LobbiesList
+                lobbies={lobbies}
+                loading={loading}
+                onJoin={() => console.log(">>> onJoin")}
+              />
+            </div>
           </div>
         </div>
       </div>

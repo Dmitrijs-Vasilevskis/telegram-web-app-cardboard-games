@@ -31,7 +31,7 @@ export function LobbiesList({ lobbies, loading, onJoin }: Props) {
   }
 
   return (
-    <div className="flex flex-col gap-2.5">
+    <div className="grid grid-cols-1 gap-3 landscape:grid-cols-2">
       {lobbies.map((lobby) => (
         <LobbyCard key={lobby.roomId} lobby={lobby} onJoin={() => onJoin()} />
       ))}
