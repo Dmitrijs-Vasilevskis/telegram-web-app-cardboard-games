@@ -1,8 +1,8 @@
-import type { LobbyRoom } from "../store/slices/lobbySlice";
+import type { LobbyInfo } from "../store/slices/lobbySlice";
 import { GameType, RoomStatus } from "@uno/shared";
 
 interface Props {
-  lobby: LobbyRoom;
+  lobby: LobbyInfo;
   onJoin: () => void;
 }
 

@@ -1,14 +1,12 @@
-import type { Room, RoomAvailable } from "@colyseus/sdk";
 import { useGameStore } from "../store/gameStore";
-import type { LobbyRoom } from "../store/slices/lobbySlice";
-
-export type SharedLobbyRoom = Room<RoomAvailable>;
+import type { LobbyInfo } from "../store/slices/lobbySlice";
+import type { AvailableLobby, SharedLobbyRoom } from "./types";
 
 export class LobbyEvents {
     private static currentRoom: SharedLobbyRoom | null = null;
     private static cleanup: Array<() => void> = [];
 
-    static initialize(room: Room) {
+    static initialize(room: SharedLobbyRoom) {
         this.destroy();
 
         this.currentRoom = room;
@@ -27,32 +25,32 @@ export class LobbyEvents {
 
     private static registerRoomEvents(room: SharedLobbyRoom) {
         this.cleanup.push(
-            room.onMessage("rooms", (rooms: RoomAvailable[]) => {
+            room.onMessage("rooms", (rooms: AvailableLobby[]) => {
                 useGameStore.getState().setLobbies(
                     rooms.map((room) => this.mapLobby(room))
                 );
             }),
 
-            room.onMessage("+", ([_, room]: [string, RoomAvailable]) => {
-                useGameStore.getState().addLobby(
+            room.onMessage("+", ([_, room]: [string, AvailableLobby]) => {
+                useGameStore.getState().upsertLobby(
                     this.mapLobby(room)
                 );
             }),
 
             room.onMessage("-", (roomId: string) => {
                 useGameStore.getState().removeLobby(roomId);
-            })
+            }),
         );
     }
 
-    private static mapLobby(room: RoomAvailable): LobbyRoom {
+    private static mapLobby(room: AvailableLobby): LobbyInfo {
         return {
             roomId: room.roomId,
             roomCode: room.metadata.roomCode,
             gameType: room.metadata.gameType,
             status: room.metadata.status,
             playerCount: room.metadata.playerCount,
-            maxPlayers: room.maxClients,
+            maxPlayers: room.metadata.maxPlayers,
         };
     }
 }

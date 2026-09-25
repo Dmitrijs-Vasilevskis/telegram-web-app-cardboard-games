@@ -1,7 +1,7 @@
 import type { GameType, RoomStatus } from "@uno/shared";
 import type { StoreSlice } from "../types";
 
-export interface LobbyRoom {
+export interface LobbyInfo {
     roomId: string;
     roomCode: string;
     gameType: GameType;
@@ -11,13 +11,13 @@ export interface LobbyRoom {
 }
 
 export interface LobbyState {
-    lobbies: LobbyRoom[];
+    lobbies: LobbyInfo[];
 }
 
 export interface LobbyActions {
-    setLobbies: (lobbies: LobbyRoom[]) => void;
-    addLobby: (lobby: LobbyRoom) => void;
-    updateLobby: (updates: LobbyRoom) => void;
+    setLobbies: (lobbies: LobbyInfo[]) => void;
+    upsertLobby: (lobby: LobbyInfo) => void;
+    updateLobby: (updates: LobbyInfo) => void;
     removeLobby: (roomId: string) => void;
     clearLobbies: () => void;
 }
@@ -30,14 +30,21 @@ export const initialLobbyState: LobbyState = {
 
 export const createLobbySlice: StoreSlice<LobbySlice> = (set) => ({
     ...initialLobbyState,
-    setLobbies: (lobbies: LobbyRoom[]) => set({ lobbies }),
-    addLobby: (lobby: LobbyRoom) => set((state) => ({
-        lobbies: state.lobbies.some(
-            (existing) => existing.roomId === lobby.roomId)
-            ? state.lobbies
-            : [...state.lobbies, lobby]
-    })),
-    updateLobby: (updates: LobbyRoom) => set((state) => ({
+    setLobbies: (lobbies: LobbyInfo[]) => set({ lobbies }),
+    upsertLobby: (lobby: LobbyInfo) => set((state) => {
+        const exist = state.lobbies.some((existing) => existing.roomId === lobby.roomId);
+
+        return {
+            lobbies: exist
+                ? state.lobbies.map((existing) =>
+                    existing.roomId === lobby.roomId
+                        ? lobby
+                        : existing
+                )
+                : [...state.lobbies, lobby],
+        };
+    }),
+    updateLobby: (updates: LobbyInfo) => set((state) => ({
         lobbies: state.lobbies.map((lobby) =>
             lobby.roomId === updates.roomId
                 ? updates
