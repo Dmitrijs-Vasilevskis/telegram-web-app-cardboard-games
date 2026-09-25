@@ -1,8 +1,8 @@
-import type { LobbyRoom } from "../store/slices/lobbySlice";
+import type { LobbyInfo } from "../store/slices/lobbySlice";
 import { LobbyCard } from "./LobbyCard";
 
 interface Props {
-  lobbies: LobbyRoom[];
+  lobbies: LobbyInfo[];
   loading: boolean;
   onJoin: () => void;
 }
