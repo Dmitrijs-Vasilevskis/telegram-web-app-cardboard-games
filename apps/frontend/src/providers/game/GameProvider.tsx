@@ -137,11 +137,11 @@ export function GameProvider({ children }: { children: React.ReactNode }) {
     try {
       GameEvents.destroy();
       await colyseusService.leave();
-
-      useGameStore.getState().reset();
-      setJoinError(null);
     } catch (error) {
       console.error("Failed to leave room", error);
+    } finally {
+      useGameStore.getState().reset();
+      setJoinError(null);
     }
   };
 

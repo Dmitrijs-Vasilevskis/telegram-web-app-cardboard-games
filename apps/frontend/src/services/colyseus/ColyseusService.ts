@@ -76,12 +76,14 @@ export class ColyseusService {
     }
 
     async leave(): Promise<void> {
-        if (!this.room) return;
+        const room = this.room;
 
         localStorage.removeItem(RECONNECTION_TOKEN);
-
-        await this.room.leave();
         this.room = null;
+
+        if (!room) return;
+
+        await room.leave();
     }
 
     async trySessionRecovery(): Promise<Room | null> {

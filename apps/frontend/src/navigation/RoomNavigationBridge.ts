@@ -11,8 +11,12 @@ export function RoomNavigationBridge() {
     const roomCode = useGameStore((state) => state.roomCode);
 
     useEffect(() => {
-        if (!roomCode && (location.pathname === '/room' || location.pathname === '/game')) {
-            navigate("/", { replace: true });
+        if (!roomCode) {
+            if (location.pathname === '/room' || location.pathname === '/game') {
+                navigate("/", { replace: true });
+            }
+
+            return;
         };
 
         switch (roomStatus) {
@@ -22,10 +26,6 @@ export function RoomNavigationBridge() {
                 }
                 break;
             case RoomStatus.PLAYING:
-                if (location.pathname !== `/game`) {
-                    navigate(`/game`, { replace: true });
-                }
-                break;
             case RoomStatus.FINISHED:
                 if (location.pathname !== `/game`) {
                     navigate(`/game`, { replace: true });
