@@ -8,11 +8,11 @@ A multiplayer game served via a Turborepo monorepo.
 ┌──────────────┐  WebSocket   ┌─────────────┐
 │  Telegram    │◄──────────►  │ Colyseus    │
 │ Web App      │              │ Backend     │
-│ (Vite +     │◄──────────►  │ (Express    │
+│ (Vite +      │◄──────────►  │ (Express    │
 │  React)      │              │ + Colyseus) │
 └──────────────┘              └───────┬─────┘
                                       │ PostgreSQL
-                                       ▼
+                                      ▼
                                   ┌──────────┐
                                   │ Database │
                                   └──────────┘
@@ -53,18 +53,18 @@ npx turbo dev
 ### Project Structure
 
 ```
-┌──────────────┐  ┌─────────────┐  ┌──────────────┐
+┌───────────────┐  ┌─────────────┐  ┌────────────────┐
 │ apps/frontend │  │ packages    │  │ docker-compose │
-│               │  │             │  │ yml          │
-└──────────────┘  └─────────────┘  └──────────────┘
+│               │  │             │  │ yml            │
+└───────────────┘  └─────────────┘  └────────────────┘
 ```
 
-| Directory | Purpose |
-|-----------|---------|
-| `apps/frontend` | Vite-based React client app |
-| `apps/backend` | Colyseus game server + Express API |
-| `packages/` | Shared dependencies (types, config) |
-| `docker-compose.yml` | Local infrastructure (PostgreSQL) |
+| Directory | Purpose                                       |
+|-----------|-----------------------------------------------|
+| `apps/frontend`     | Vite-based React client app         |
+| `apps/backend`      | Colyseus game server + Express API  |
+| `packages/`         | Shared dependencies (types, config) |
+| `docker-compose.yml`| Local infrastructure (PostgreSQL)   |
 
 ### Key Endpoints
 
@@ -73,11 +73,11 @@ npx turbo dev
 
 ### Environment Variables
 
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `PORT` | 2567 | Backend port |
-| `FRONTEND_PORT` | 3000 | Frontend port |
-| `DATABASE_URL` | — | PostgreSQL connection string |
+| Variable        | Default | Description                  |
+|-----------------|---------|------------------------------|
+| `PORT`          | 2567    | Backend port                 |
+| `FRONTEND_PORT` | 3000    | Frontend port                |
+| `DATABASE_URL`  | —       | PostgreSQL connection string |
 
 ### Dependencies
 
